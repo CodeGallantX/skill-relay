@@ -6,26 +6,29 @@ import { OnboardingPage } from './pages/OnboardingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AuthProvider } from './context/AuthContext';
 import { AppProvider } from './context/AppContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { Toaster } from 'sonner';
 
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <AppProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/signin" element={<SignInPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-            </Routes>
-          </Router>
-          <Toaster position="top-right" />
-        </AppProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/signin" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/onboarding" element={<OnboardingPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+              </Routes>
+            </Router>
+            <Toaster position="top-right" />
+          </AppProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

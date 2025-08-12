@@ -68,8 +68,8 @@
   --chart-4: var(--yellow-300);
   --chart-5: var(--purple-700);
 
-  /* Sidebar colors (example, adjust as needed) */
-  --sidebar: var(--purple-100);
+    /* Sidebar colors (example, adjust as needed) */
+  --sidebar: #f9fafb;
   --sidebar-foreground: var(--purple-900);
   --sidebar-primary: var(--purple-700);
   --sidebar-primary-foreground: var(--yellow-50);
@@ -77,6 +77,146 @@
   --sidebar-accent-foreground: var(--purple-800);
   --sidebar-border: var(--purple-200);
   --sidebar-ring: var(--purple-500);
+}
+
+a {
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--primary-foreground);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: var(--foreground);
+    background-color: var(--background);
+  }
+  a:hover {
+    color: var(--primary-foreground);
+  }
+  button {
+    background-color: var(--secondary);
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+.dark {
+  /* Shadcn UI Variable Mapping (Dark Theme) */
+  --background: #1f2937;
+  --foreground: #f9fafb;
+  --card: #374151;
+  --card-foreground: #f9fafb;
+  --popover: #374151;
+  --popover-foreground: #f9fafb;
+  --primary: var(--purple-400);
+  --primary-foreground: var(--purple-900);
+  --secondary: var(--yellow-400);
+  --secondary-foreground: var(--purple-900);
+  --muted: var(--purple-700);
+  --muted-foreground: var(--yellow-200);
+  --accent: var(--purple-600);
+  --accent-foreground: var(--yellow-50);
+  --destructive: #ef4444; /* Red for destructive actions */
+  --border: var(--purple-700);
+  --input: var(--purple-700);
+  --ring: var(--yellow-400);
+
+  /* Chart colors (can be customized further) */
+  --chart-1: var(--purple-400);
+  --chart-2: var(--yellow-400);
+  --chart-3: var(--purple-600);
+  --chart-4: var(--yellow-200);
+  --chart-5: var(--purple-200);
+
+  /* Sidebar colors (example, adjust as needed) */
+  --sidebar: #374151;
+  --sidebar-foreground: var(--yellow-50);
+  --sidebar-primary: var(--yellow-400);
+  --sidebar-primary-foreground: var(--purple-900);
+  --sidebar-accent: var(--purple-400);
+  --sidebar-accent-foreground: var(--purple-900);
+  --sidebar-border: var(--purple-700);
+  --sidebar-ring: var(--yellow-400);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 a {

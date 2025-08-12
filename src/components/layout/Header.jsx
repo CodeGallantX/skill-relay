@@ -21,15 +21,19 @@ import {
   LogOut, 
   Wallet,
   Menu,
-  X
+  X,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useApp } from '@/context/AppContext';
+import { useTheme } from '@/context/ThemeContext';
 import { cn } from '@/lib/utils';
 
 export const Header = () => {
   const { user, logout } = useAuth();
   const { state, setSearchQuery } = useApp();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -45,6 +49,10 @@ export const Header = () => {
   const handleLogout = async () => {
     await logout();
     navigate('/');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   return (
@@ -75,6 +83,9 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
+            <Button variant="ghost" size="sm" onClick={toggleTheme}>
+              {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
             {user ? (
               <>
                 {/* Create Button */}
@@ -209,6 +220,18 @@ export const Header = () => {
 
             {/* Mobile Navigation */}
             <div className="space-y-2">
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start"
+                onClick={toggleTheme}
+              >
+                {theme === 'light' ? (
+                  <Moon className="h-4 w-4 mr-2" />
+                ) : (
+                  <Sun className="h-4 w-4 mr-2" />
+                )}
+                Toggle Theme
+              </Button>
               {user ? (
                 <>
                   <Button asChild variant="ghost" className="w-full justify-start">
