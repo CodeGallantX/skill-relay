@@ -16,6 +16,7 @@ This is a web application project, likely built to facilitate skill sharing, rel
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+- [Repository](#repository)
 
 ## Features
 
@@ -59,7 +60,7 @@ Make sure you have the following installed:
 
 1.  Clone the repository:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/codegallantx/skill-relay
     cd skill-relay-web
     ```
 2.  Install the dependencies:
@@ -137,3 +138,10 @@ Contributions are welcome! Please follow these steps:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. (Note: A `LICENSE` file is not yet present and should be added.)
+
+## Repository
+
+This project is hosted on GitHub:
+
+*   **GitHub Profile:** [CodeGallantX](https://github.com/codegallantx)
+*   **Repository Link:** [https://github.com/codegallantx/skill-relay](https://github.com/codegallantx/skill-relay)
