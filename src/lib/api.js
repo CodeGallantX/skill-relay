@@ -60,7 +60,7 @@ export const authApi = {
     });
   },
 
-  getUser: async (token) => {
+  getUser: async () => {
     return mockApiCall({
       success: true,
       user: {
@@ -78,14 +78,14 @@ export const authApi = {
     });
   },
 
-  resetPassword: async (email) => {
+  resetPassword: async () => {
     return mockApiCall({
       success: true,
       message: 'Password reset email sent'
     });
   },
 
-  verifyOTP: async (email, otp) => {
+  verifyOTP: async () => {
     return mockApiCall({
       success: true,
       message: 'OTP verified successfully',
@@ -97,7 +97,7 @@ export const authApi = {
     return `${API_BASE_URL}/auth/${provider}`;
   },
 
-  socialAuthCallback: async (provider, code) => {
+  socialAuthCallback: async (provider) => {
     return mockApiCall({
       success: true,
       message: `${provider} authentication successful`,
@@ -117,7 +117,7 @@ export const authApi = {
 
 // Content API
 export const contentApi = {
-  getFeed: async (page = 1, filters = {}) => {
+  getFeed: async (page = 1) => {
     const mockLessons = Array.from({ length: 10 }, (_, i) => ({
       id: `lesson-${page}-${i}`,
       title: `Amazing ${['Coding', 'Design', 'Marketing', 'Photography', 'Music'][i % 5]} Lesson`,
@@ -157,7 +157,7 @@ export const contentApi = {
     });
   },
 
-  searchContent: async (query, filters = {}) => {
+  searchContent: async (query) => {
     return mockApiCall({
       success: true,
       results: [
@@ -200,7 +200,7 @@ export const contentApi = {
 
 // Social API
 export const socialApi = {
-  likeContent: async (contentId) => {
+  likeContent: async () => {
     return mockApiCall({
       success: true,
       liked: true,
@@ -208,7 +208,7 @@ export const socialApi = {
     });
   },
 
-  followUser: async (userId) => {
+  followUser: async () => {
     return mockApiCall({
       success: true,
       following: true,
@@ -216,7 +216,7 @@ export const socialApi = {
     });
   },
 
-  getComments: async (contentId) => {
+  getComments: async () => {
     const mockComments = Array.from({ length: 5 }, (_, i) => ({
       id: `comment-${i}`,
       text: `This is an amazing lesson! Thanks for sharing. Comment ${i + 1}`,
@@ -255,7 +255,7 @@ export const socialApi = {
 
 // Payment API
 export const paymentApi = {
-  createPaymentIntent: async (amount, currency = 'USD') => {
+  createPaymentIntent: async () => {
     return mockApiCall({
       success: true,
       clientSecret: `pi_mock_${Math.random().toString(36).substr(2, 9)}_secret`,
@@ -282,7 +282,7 @@ export const paymentApi = {
     });
   },
 
-  withdrawFunds: async (amount, method) => {
+  withdrawFunds: async () => {
     return mockApiCall({
       success: true,
       message: 'Withdrawal request submitted',
@@ -315,7 +315,7 @@ export const notificationApi = {
     });
   },
 
-  markAsRead: async (notificationId) => {
+  markAsRead: async () => {
     return mockApiCall({
       success: true,
       message: 'Notification marked as read'

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 export const useInfiniteScroll = (fetchNextPage, hasNextPage, isFetchingNextPage) => {
