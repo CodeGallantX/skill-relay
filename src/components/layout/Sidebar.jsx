@@ -18,16 +18,16 @@ import { useAuth } from '@/hooks/useAuth';
 
 const navigationItems = [
   { icon: Home, label: 'Home', href: '/dashboard' },
-  { icon: Compass, label: 'Explore', href: '/explore' },
-  { icon: TrendingUp, label: 'Trending', href: '/trending' },
-  { icon: Users, label: 'Following', href: '/following', requiresAuth: true },
+  { icon: Compass, label: 'Explore', href: '/dashboard/explore' },
+  { icon: TrendingUp, label: 'Trending', href: '/dashboard/trending' },
+  { icon: Users, label: 'Following', href: '/dashboard/following', requiresAuth: true },
 ];
 
 const libraryItems = [
-  { icon: BookOpen, label: 'My Lessons', href: '/my-lessons', requiresAuth: true },
-  { icon: Heart, label: 'Liked', href: '/liked', requiresAuth: true },
-  { icon: Clock, label: 'Watch Later', href: '/watch-later', requiresAuth: true },
-  { icon: Star, label: 'Favorites', href: '/favorites', requiresAuth: true },
+  { icon: BookOpen, label: 'My Lessons', href: '/dashboard/my-lessons', requiresAuth: true },
+  { icon: Heart, label: 'Liked', href: '/dashboard/liked', requiresAuth: true },
+  { icon: Clock, label: 'Watch Later', href: '/dashboard/watch-later', requiresAuth: true },
+  { icon: Star, label: 'Favorites', href: '/dashboard/favorites', requiresAuth: true },
 ];
 
 const categories = [
@@ -48,7 +48,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
   const NavItem = ({ icon: Icon, label, href, requiresAuth = false }) => {
     if (requiresAuth && !isAuthenticated) return null;
 
-    const isActive = location.pathname === href;
+    const isActive = location.pathname === href || (href !== '/dashboard' && location.pathname.startsWith(href));
     
     return (
       <Button
@@ -122,7 +122,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
                 className="w-full justify-start"
                 onClick={onClose}
               >
-                <Link to={`/category/${category.toLowerCase()}`}>
+                <Link to={`/dashboard/categories/${category.toLowerCase().replace(/ /g, '-')}`}>
                   {category}
                 </Link>
               </Button>
@@ -133,8 +133,8 @@ export const Sidebar = ({ isOpen, onClose }) => {
 
           {/* Footer Links */}
           <div className="mt-auto space-y-1">
-            <NavItem icon={Settings} label="Settings" href="/settings" />
-            <NavItem icon={HelpCircle} label="Help & Support" href="/help" />
+            <NavItem icon={Settings} label="Settings" href="/dashboard/settings" />
+            <NavItem icon={HelpCircle} label="Help & Support" href="/dashboard/help" />
           </div>
         </div>
       </aside>

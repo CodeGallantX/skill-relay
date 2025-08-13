@@ -12,6 +12,8 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 import ProfilePage from './pages/ProfilePage';
 import EmailVerification from './components/auth/EmailVerification';
+import { ExplorePage } from './pages/ExplorePage';
+import { TrendingPage } from './pages/TrendingPage';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           <Route element={<RequireAuth />}>
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard/explore" element={<ExplorePage />} />
+            <Route path="/dashboard/trending" element={<TrendingPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Routes>
