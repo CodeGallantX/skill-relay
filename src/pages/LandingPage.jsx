@@ -17,7 +17,9 @@ import {
   ArrowRight,
   Zap,
   Shield,
-  Globe
+  Globe,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -101,7 +103,7 @@ const LandingPage = () => {
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center space-x-3">
               <Button variant="ghost" onClick={toggleTheme}>
-                {theme === 'light' ? '🌙' : '☀️'}
+                {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
               <Button variant="ghost" asChild>
                 <Link to="/signin">Sign In</Link>
