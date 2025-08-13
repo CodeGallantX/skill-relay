@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, Shield } from 'lucide-react';
 
 const ResetPasswordPage = () => {
   const { resetPassword, loading } = useAuth();
@@ -45,15 +45,29 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back to Sign In */}
+        <div className="mb-6">
+          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
+            <Link to="/signin">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Sign In
+            </Link>
+          </Button>
+        </div>
+
+        <Card className="shadow-2xl border-0 animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Reset Password</CardTitle>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+              <Shield className="h-8 w-8 text-white" />
+            </div>
+            <CardTitle className="text-3xl font-bold gradient-text">Reset Password</CardTitle>
           <CardDescription>
-            Enter your new password below.
+              Create a new secure password for your account.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+          <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -63,7 +77,7 @@ const ResetPasswordPage = () => {
                   id="email"
                   type="email"
                   placeholder="your@example.com"
-                  className="pl-10"
+                    className="pl-10 h-12 text-base"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -80,7 +94,7 @@ const ResetPasswordPage = () => {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter new password"
-                  className="pl-10 pr-10"
+                    className="pl-10 pr-10 h-12 text-base"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -110,7 +124,7 @@ const ResetPasswordPage = () => {
                   id="password-confirmation"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Confirm new password"
-                  className="pl-10 pr-10"
+                    className="pl-10 pr-10 h-12 text-base"
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
                   required
@@ -132,14 +146,19 @@ const ResetPasswordPage = () => {
               </div>
             </div>
 
-            {error && <p className="text-sm text-destructive text-center">{error}</p>}
+              {error && (
+                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <p className="text-sm text-destructive text-center">{error}</p>
+                </div>
+              )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
               {loading ? <LoadingSpinner size="sm" /> : 'Reset Password'}
             </Button>
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

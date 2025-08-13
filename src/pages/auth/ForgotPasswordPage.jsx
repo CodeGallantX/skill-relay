@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Mail } from 'lucide-react';
+import { Mail, ArrowLeft } from 'lucide-react';
 
 const ForgotPasswordPage = () => {
   const { requestPasswordReset, loading } = useAuth();
@@ -27,15 +27,29 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back to Sign In */}
+        <div className="mb-6">
+          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
+            <Link to="/signin">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Sign In
+            </Link>
+          </Button>
+        </div>
+
+        <Card className="shadow-2xl border-0 animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Forgot Password?</CardTitle>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+              <Mail className="h-8 w-8 text-white" />
+            </div>
+            <CardTitle className="text-3xl font-bold gradient-text">Forgot Password?</CardTitle>
           <CardDescription>
-            Enter your email address and we'll send you a link to reset your password.
+              No worries! Enter your email and we'll send you a reset link.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+          <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -45,27 +59,40 @@ const ForgotPasswordPage = () => {
                   id="email"
                   type="email"
                   placeholder="your@example.com"
-                  className="pl-10"
+                    className="pl-10 h-12 text-base"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
             </div>
-            {message && <p className="text-sm text-green-500 text-center">{message}</p>}
-            {error && <p className="text-sm text-destructive text-center">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
+              
+              {message && (
+                <div className="p-3 rounded-lg bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
+                  <p className="text-sm text-green-700 dark:text-green-300 text-center">{message}</p>
+                </div>
+              )}
+              
+              {error && (
+                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <p className="text-sm text-destructive text-center">{error}</p>
+                </div>
+              )}
+              
+              <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
               {loading ? <LoadingSpinner size="sm" /> : 'Send Reset Link'}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
+            
+            <div className="text-center text-sm text-muted-foreground">
             Remember your password?{' '}
-            <Link to="/signin" className="underline">
+              <Link to="/signin" className="text-primary hover:underline font-medium">
               Sign In
             </Link>
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

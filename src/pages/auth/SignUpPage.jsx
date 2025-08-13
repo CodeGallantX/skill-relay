@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 
 const SignUpPage = () => {
   const { register, isAuthenticated, loading } = useAuth();
@@ -44,15 +44,29 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back to Home */}
+        <div className="mb-6">
+          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
+            <Link to="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
+
+        <Card className="shadow-2xl border-0 animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Create an Account</CardTitle>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-2xl">SR</span>
+            </div>
+            <CardTitle className="text-3xl font-bold gradient-text">Create an Account</CardTitle>
           <CardDescription>
-            Sign up to get started with SkillRelay.
+              Join thousands of learners and creators on SkillRelay.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+          <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
@@ -62,7 +76,7 @@ const SignUpPage = () => {
                   id="name"
                   type="text"
                   placeholder="Your Full Name"
-                  className="pl-10"
+                    className="pl-10 h-12 text-base"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -78,7 +92,7 @@ const SignUpPage = () => {
                   id="email"
                   type="email"
                   placeholder="your@example.com"
-                  className="pl-10"
+                    className="pl-10 h-12 text-base"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -94,7 +108,7 @@ const SignUpPage = () => {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Create a password"
-                  className="pl-10 pr-10"
+                    className="pl-10 pr-10 h-12 text-base"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -124,7 +138,7 @@ const SignUpPage = () => {
                   id="password-confirmation"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Confirm your password"
-                  className="pl-10 pr-10"
+                    className="pl-10 pr-10 h-12 text-base"
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
                   required
@@ -146,21 +160,26 @@ const SignUpPage = () => {
               </div>
             </div>
 
-            {error && <p className="text-sm text-destructive text-center">{error}</p>}
+              {error && (
+                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <p className="text-sm text-destructive text-center">{error}</p>
+                </div>
+              )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
               {loading ? <LoadingSpinner size="sm" /> : 'Sign Up'}
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-sm">
+            <div className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link to="/signin" className="underline">
+              <Link to="/signin" className="text-primary hover:underline font-medium">
               Sign In
             </Link>
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

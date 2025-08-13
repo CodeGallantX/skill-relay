@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 
 const SignInPage = () => {
   const { login, isAuthenticated, loading, startGoogleOAuth } = useAuth();
@@ -35,15 +35,29 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back to Home */}
+        <div className="mb-6">
+          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
+            <Link to="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
+
+        <Card className="shadow-2xl border-0 animate-scale-in">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome Back!</CardTitle>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-2xl">SR</span>
+            </div>
+            <CardTitle className="text-3xl font-bold gradient-text">Welcome Back!</CardTitle>
           <CardDescription>
-            Sign in to your account to continue.
+              Sign in to your account to continue your learning journey.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+          <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -53,7 +67,7 @@ const SignInPage = () => {
                   id="email"
                   type="email"
                   placeholder="your@example.com"
-                  className="pl-10"
+                    className="pl-10 h-12 text-base"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -69,7 +83,7 @@ const SignInPage = () => {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  className="pl-10 pr-10"
+                    className="pl-10 pr-10 h-12 text-base"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -90,32 +104,41 @@ const SignInPage = () => {
               </div>
             </div>
 
-            {error && <p className="text-sm text-destructive text-center">{error}</p>}
+              {error && (
+                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <p className="text-sm text-destructive text-center">{error}</p>
+                </div>
+              )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
               {loading ? <LoadingSpinner size="sm" /> : 'Sign In'}
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-sm">
-            <Link to="/forgot-password" className="underline">
+            <div className="text-center">
+              <Link to="/forgot-password" className="text-sm text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
 
-          <div className="mt-6">
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-4 text-muted-foreground font-medium">
                 Or continue with
               </span>
             </div>
+            </div>
+
             <Button
               variant="outline"
-              className="w-full mt-4"
+              className="w-full h-12 text-base"
               onClick={startGoogleOAuth}
               disabled={loading}
             >
-              <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 mr-3" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -123,16 +146,16 @@ const SignInPage = () => {
               </svg>
               Sign in with Google
             </Button>
-          </div>
 
-          <div className="mt-4 text-center text-sm">
+            <div className="text-center text-sm text-muted-foreground">
             Don't have an account?{' '}
-            <Link to="/signup" className="underline">
+              <Link to="/signup" className="text-primary hover:underline font-medium">
               Sign up
             </Link>
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
