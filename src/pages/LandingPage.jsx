@@ -22,9 +22,11 @@ import {
   Moon
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import VideoPlayerModal from '@/components/common/VideoPlayerModal';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { theme, toggleTheme } = useTheme();
 
@@ -180,7 +182,7 @@ const LandingPage = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6" onClick={() => setIsDemoModalOpen(true)}>
                 <Play className="mr-2 h-5 w-5" />
                 Watch Demo
               </Button>
@@ -576,6 +578,12 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
+      {isDemoModalOpen && (
+        <VideoPlayerModal 
+          videoUrl="https://www.w3schools.com/html/mov_bbb.mp4" 
+          onClose={() => setIsDemoModalOpen(false)} 
+        />
+      )}
     </div>
   );
 };

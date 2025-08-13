@@ -62,3 +62,15 @@ api.interceptors.response.use(
 export const authApi = {
   socialAuthRedirect: (provider) => `${API_BASE_URL}/auth/${provider}/redirect`,
 };
+
+api.getTopCreators = () => {
+  return api.get('/creators/top');
+};
+
+api.getCategories = () => {
+  return api.get('/categories');
+};
+
+api.submitOnboarding = (data) => {
+  return api.post('/user/onboarding', data);
+};

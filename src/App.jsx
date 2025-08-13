@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
-import { OnboardingPage } from './pages/OnboardingPage';
+import OnboardingPage from './pages/OnboardingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { Toaster } from 'sonner';
@@ -13,6 +13,7 @@ import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 import ProfilePage from './pages/ProfilePage';
 import EmailVerification from './components/auth/EmailVerification';
 import { ExplorePage } from './pages/ExplorePage';
+import MyLessonsPage from './pages/MyLessonsPage';
 import { TrendingPage } from './pages/TrendingPage';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
             <Route path="/dashboard/explore" element={<ExplorePage />} />
             <Route path="/dashboard/trending" element={<TrendingPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/my-lessons" element={<MyLessonsPage />} />
           </Route>
         </Routes>
       </Router>

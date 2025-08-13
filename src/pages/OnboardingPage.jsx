@@ -1,31 +1,11 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
-import { useAuth } from '@/hooks/useAuth';
 
-export const OnboardingPage = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+import React from 'react';
+import OnboardingFlow from '../components/onboarding/OnboardingFlow';
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
-
-  const handleComplete = () => {
-    navigate('/dashboard');
-  };
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
+const OnboardingPage = () => {
   return (
-    <>
-      <title>Onboarding - Skill Relay</title>
-      <meta name="description" content="Complete your profile and get started on Skill Relay." />
-      <OnboardingFlow onComplete={handleComplete} />
-    </>
+    <OnboardingFlow />
   );
 };
+
+export default OnboardingPage;
