@@ -1,128 +1,159 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { authApi } from '../lib/api';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { api, authApi } from '@/lib/api';
 import { toast } from 'sonner';
-import { socketManager } from '../lib/socket';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 
-export const AuthContext = createContext(null);
+const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch current user on app mount
+  const { data: fetchedUser, isLoading: isFetchingUser } = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => {
+      try {
+        const response = await api.get('/auth/user');
+        return response.data.user;
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          setUser(null);
+          return null;
+        }
+        throw err;
+      }
+    },
+    onSuccess: (data) => {
+      setUser(data);
+      setInitializing(false);
+    },
+    onError: (err) => {
+      setError(err);
+      setInitializing(false);
+    },
+    retry: false,
+  });
 
   useEffect(() => {
-    // Check for stored session
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setToken(storedToken);
+    if (!isFetchingUser && fetchedUser !== undefined) {
+      setUser(fetchedUser);
     }
-    setLoading(false);
-  }, []);
+  }, [isFetchingUser, fetchedUser]);
 
-  const login = async (credentials) => {
-    try {
-      const response = await authApi.login(credentials);
-      if (response.success) {
-        setUser(response.user);
-        setToken(response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        localStorage.setItem('token', response.token);
-        toast.success(response.message);
-        return response.user;
-      }
-    } catch (error) {
-      toast.error(error.message || 'Login failed');
-      throw error;
-    }
-  };
+  const registerMutation = useMutation({
+    mutationFn: async (payload) => {
+      const response = await api.post('/auth/register', payload);
+      return response.data;
+    },
+    onSuccess: async (data) => {
+      toast.success(data.message || 'Registration successful!');
+      // Optionally auto-login after registration if backend supports it
+      // For now, we'll just refetch user to see if they are logged in
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      await queryClient.refetchQueries({ queryKey: ['me'] });
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Registration failed.');
+      setError(err);
+    },
+  });
 
-  const register = async (userData) => {
-    try {
-      const response = await authApi.register(userData);
-      if (response.success) {
-        setUser(response.user);
-        setToken(response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        localStorage.setItem('token', response.token);
-        toast.success(response.message);
-        return response.user;
-      }
-    } catch (error) {
-      toast.error(error.message || 'Registration failed');
-      throw error;
-    }
-  };
+  const loginMutation = useMutation({
+    mutationFn: async (payload) => {
+      const response = await api.post('/auth/login', payload);
+      return response.data;
+    },
+    onSuccess: async (data) => {
+      toast.success(data.message || 'Login successful!');
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      await queryClient.refetchQueries({ queryKey: ['me'] });
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Login failed.');
+      setError(err);
+    },
+  });
 
-  const logout = async () => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await api.post('/auth/logout');
+    },
+    onSuccess: async (data) => {
+      toast.success(data?.message || 'Logged out successfully!');
       setUser(null);
-      setToken(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      socketManager.disconnect();
-      toast.info('Logged out successfully');
-    }
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Logout failed.');
+      setError(err);
+    },
+  });
+
+  const requestPasswordResetMutation = useMutation({
+    mutationFn: async (email) => {
+      const response = await api.post('/auth/password/email', { email });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || 'Password reset link sent!');
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to send password reset link.');
+      setError(err);
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (payload) => {
+      const response = await api.post('/auth/password/reset', payload);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || 'Password has been reset!');
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to reset password.');
+      setError(err);
+    },
+  });
+
+  const startGoogleOAuth = () => {
+    window.location.href = authApi.socialAuthRedirect('google');
   };
 
-  const resetPassword = async (email) => {
-    try {
-      const response = await authApi.resetPassword(email);
-      toast.success(response.message);
-      return response;
-    } catch (error) {
-      toast.error(error.message || 'Password reset failed');
-      throw error;
-    }
-  };
-
-  const verifyOTP = async (email, otp) => {
-    try {
-      const response = await authApi.verifyOTP(email, otp);
-      if (response.success) {
-        setToken(response.token);
-        localStorage.setItem('token', response.token);
-        toast.success(response.message);
-        return response;
-      }
-    } catch (error) {
-      toast.error(error.message || 'OTP verification failed');
-      throw error;
-    }
-  };
-
-  const updateUser = (userData) => {
-    setUser(null);
-    setUser(prev => ({ ...prev, ...userData }));
-    localStorage.setItem('user', JSON.stringify({ ...user, ...userData }));
-  };
-
-  const value = {
+  const authContextValue = {
     user,
-    token,
     isAuthenticated: !!user,
-    loading,
-    login,
-    register,
-    logout,
-    resetPassword,
-    verifyOTP,
-    updateUser,
+    initializing,
+    loading: registerMutation.isPending || loginMutation.isPending || logoutMutation.isPending || requestPasswordResetMutation.isPending || resetPasswordMutation.isPending,
+    error,
+    register: registerMutation.mutateAsync,
+    login: loginMutation.mutateAsync,
+    logout: logoutMutation.mutateAsync,
+    requestPasswordReset: requestPasswordResetMutation.mutateAsync,
+    resetPassword: resetPasswordMutation.mutateAsync,
+    fetchMe: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      return queryClient.refetchQueries({ queryKey: ['me'] });
+    },
+    startGoogleOAuth,
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={authContextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

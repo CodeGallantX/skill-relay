@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useInView } from 'react-intersection-observer';
-import { socialApi } from '@/lib/api';
+import { useLikeLesson } from '@/hooks/useSocialActions';
 import { toast } from 'sonner';
 
 export const LessonCard = ({ lesson, onLike, onComment, onShare }) => {
@@ -33,6 +33,8 @@ export const LessonCard = ({ lesson, onLike, onComment, onShare }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likeCount, setLikeCount] = useState(lesson.stats.likes);
   const videoRef = useRef(null);
+
+  const { mutate: likeLesson, isPending: isLiking } = useLikeLesson();
 
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -72,12 +74,17 @@ export const LessonCard = ({ lesson, onLike, onComment, onShare }) => {
 
   const handleLike = async () => {
     try {
-      const response = await socialApi.likeContent(lesson.id);
-      setIsLiked(response.liked);
-      setLikeCount(response.totalLikes);
-      onLike?.(lesson.id, response.liked);
+      await likeLesson(lesson.id);
+      // Optimistically update UI or rely on onSuccess of mutation
+      // For now, we'll toggle and let mutation success handle actual count
+      setIsLiked(!isLiked);
+      setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
+      onLike?.(lesson.id, !isLiked);
     } catch (error) {
-      toast.error('Failed to like lesson');
+      // Error handled by useLikeLesson's onError
+      // Revert optimistic update if needed, or rely on query invalidation
+      setIsLiked(isLiked);
+      setLikeCount(prev => isLiked ? prev + 1 : prev - 1);
     }
   };
 
@@ -244,6 +251,7 @@ export const LessonCard = ({ lesson, onLike, onComment, onShare }) => {
             isLiked && "text-red-500"
           )}
           onClick={handleLike}
+          disabled={isLiking}
         >
           <Heart className={cn("h-6 w-6", isLiked && "fill-current")} />
           <span className="text-xs">{likeCount.toLocaleString()}</span>

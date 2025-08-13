@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
@@ -8,7 +8,7 @@ import { LoadingSpinner, LoadingCard } from '@/components/common/LoadingSpinner'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useAuth } from '@/hooks/useAuth';
 import { useApp } from '@/context/AppContext';
-import { contentApi } from '@/lib/api';
+import { dummyContentApi } from '@/lib/dummyApi';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 
@@ -27,7 +27,7 @@ export const DashboardPage = () => {
     error
   } = useInfiniteQuery({
     queryKey: ['feed', state.feedFilters],
-    queryFn: ({ pageParam = 1 }) => contentApi.getFeed(pageParam, state.feedFilters),
+    queryFn: ({ pageParam = 1 }) => dummyContentApi.fetchLessons(state.feedFilters),
     getNextPageParam: (lastPage) => 
       lastPage.pagination.hasNext ? lastPage.pagination.page + 1 : undefined,
     enabled: isAuthenticated,

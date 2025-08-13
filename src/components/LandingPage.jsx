@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from './ui/button'; // Assuming button component is available
 
 const LandingPage = () => {
