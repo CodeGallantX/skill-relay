@@ -36,6 +36,8 @@ const SignInPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <title>Sign In - Skill Relay</title>
+      <meta name="description" content="Sign in to your Skill Relay account to continue your learning journey." />
       <div className="w-full max-w-md">
         {/* Back to Home */}
         <div className="mb-6">

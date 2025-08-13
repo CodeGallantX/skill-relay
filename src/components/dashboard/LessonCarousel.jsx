@@ -11,8 +11,8 @@ const LessonCarousel = ({ title, lessons }) => {
   return (
     <div className="mb-8">
       <CardTitle className="text-2xl font-bold mb-4">{title}</CardTitle>
-      <ScrollArea className="w-full whitespace-nowrap rounded-md border">
-        <div className="flex w-max space-x-4 p-4">
+      <ScrollArea className="w-full max-w-full whitespace-nowrap rounded-md border">
+        <div className="flex space-x-4 p-4">
           {lessons.map((lesson) => (
             <div key={lesson.id} className="inline-block min-w-[280px]">
               <LessonCard lesson={lesson} />

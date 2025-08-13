@@ -72,6 +72,8 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <title>Skill Relay - Master Skills in Minutes</title>
+      <meta name="description" content="Discover bite-sized video lessons from experts, create your own content, and monetize your knowledge on the world's fastest-growing skill-sharing platform." />
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4">

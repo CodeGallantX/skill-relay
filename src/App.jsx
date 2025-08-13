@@ -18,6 +18,9 @@ import { TrendingPage } from './pages/TrendingPage';
 function App() {
   return (
     <ErrorBoundary>
+      <title>Skill Relay - The best platform to learn new skills</title>
+      <meta name="description" content="Skill Relay is a platform where you can learn new skills from the best creators. We have a wide range of courses and tutorials to help you learn everything you need to know." />
+      <link rel="canonical" href="https://skill-relay.com/" />
       <Router>
         <Routes>
           {/* Public Routes */}

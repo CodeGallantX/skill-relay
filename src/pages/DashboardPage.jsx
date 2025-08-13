@@ -67,6 +67,8 @@ export const DashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <title>Dashboard - Skill Relay</title>
+      <meta name="description" content="Your Skill Relay dashboard. Track your progress, continue watching lessons, and discover new content." />
       <Header />
       
       <div className="flex">
@@ -75,7 +77,7 @@ export const DashboardPage = () => {
           onClose={() => setIsSidebarOpen(false)} 
         />
         
-        <main className="flex-1 lg:ml-64">
+        <main className="flex-1 lg:ml-64 max-w-full overflow-x-hidden">
           {/* Mobile Header */}
           <div className="lg:hidden p-4">
             <Button

@@ -112,6 +112,8 @@ export const ExplorePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <title>Explore - Skill Relay</title>
+      <meta name="description" content="Explore thousands of bite-sized video lessons on Skill Relay. Filter by category and sort by popularity or newest content." />
       <Header />
       
       <div className="flex">

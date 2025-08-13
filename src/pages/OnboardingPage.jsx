@@ -21,5 +21,11 @@ export const OnboardingPage = () => {
     return null;
   }
 
-  return <OnboardingFlow onComplete={handleComplete} />;
+  return (
+    <>
+      <title>Onboarding - Skill Relay</title>
+      <meta name="description" content="Complete your profile and get started on Skill Relay." />
+      <OnboardingFlow onComplete={handleComplete} />
+    </>
+  );
 };

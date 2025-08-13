@@ -95,6 +95,8 @@ export const TrendingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <title>Trending - Skill Relay</title>
+      <meta name="description" content="Discover trending lessons, tags, and creators on Skill Relay. See what's popular right now." />
       <Header />
       
       <div className="flex">

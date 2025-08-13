@@ -24,6 +24,8 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <title>Profile - Skill Relay</title>
+      <meta name="description" content="View and manage your Skill Relay profile." />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">User Profile</CardTitle>
