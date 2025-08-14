@@ -6,6 +6,16 @@ const initialState = {
   notifications: [],
   unreadCount: 0,
   currentLesson: null,
+  onboardingData: {
+    role: '',
+    interests: [],
+    followedCreators: [],
+    contentType: [],
+    skills: [],
+    experienceLevel: '',
+    howDidYouHear: '',
+    completed: false
+  },
   feedFilters: {
     category: 'all',
     difficulty: 'all',
@@ -52,6 +62,18 @@ const appReducer = (state, action) => {
       return {
         ...state,
         currentLesson: action.payload
+      };
+    
+    case 'UPDATE_ONBOARDING_DATA':
+      return {
+        ...state,
+        onboardingData: { ...state.onboardingData, ...action.payload }
+      };
+    
+    case 'COMPLETE_ONBOARDING':
+      return {
+        ...state,
+        onboardingData: { ...state.onboardingData, completed: true }
       };
     
     case 'UPDATE_FEED_FILTERS':
@@ -123,6 +145,12 @@ export const AppProvider = ({ children }) => {
     
     setCurrentLesson: (lesson) => 
       dispatch({ type: 'SET_CURRENT_LESSON', payload: lesson }),
+    
+    updateOnboardingData: (data) => 
+      dispatch({ type: 'UPDATE_ONBOARDING_DATA', payload: data }),
+    
+    completeOnboarding: () => 
+      dispatch({ type: 'COMPLETE_ONBOARDING' }),
     
     updateFeedFilters: (filters) => 
       dispatch({ type: 'UPDATE_FEED_FILTERS', payload: filters }),

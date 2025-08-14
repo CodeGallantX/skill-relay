@@ -1,62 +1,33 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useApp } from '@/context/AppContext';
 import { ProgressIndicator } from './ProgressIndicator';
 import StepRoleSelection from './StepRoleSelection';
 import StepLearnerInterests from './StepLearnerInterests';
 import StepLearnerFollowCreators from './StepLearnerFollowCreators';
-import StepLearnerLearningStyle from './StepLearnerLearningStyle';
-import StepLearnerGoals from './StepLearnerGoals';
 import StepCreatorContentType from './StepCreatorContentType';
 import StepCreatorSkills from './StepCreatorSkills';
 import StepCreatorExperience from './StepCreatorExperience';
-import StepCreatorGoals from './StepCreatorGoals';
-import StepCreatorMonetization from './StepCreatorMonetization';
 import StepHowDidYouHear from './StepHowDidYouHear';
-import StepNotificationPreferences from './StepNotificationPreferences';
-import { api } from '../../lib/api';
+import { toast } from 'sonner';
 
 const OnboardingFlow = () => {
-  const { user, updateUser } = useAuth();
+  const { state, updateOnboardingData, completeOnboarding } = useApp();
   const navigate = useNavigate();
-  const [onboardingData, setOnboardingData] = useState({
-    role: '',
-    interests: [],
-    followedCreators: [],
-    learningStyle: '',
-    learningGoals: '',
-    contentType: [],
-    skills: [],
-    experienceLevel: '',
-    contentGoals: [],
-    monetizationInterest: null,
-    howDidYouHear: '',
-    notificationPreferences: {
-      email: true,
-      push: true,
-      inApp: true,
-    },
-  });
   const [currentStep, setCurrentStep] = useState(1);
-  const [totalSteps, setTotalSteps] = useState(7); // Default for learner
+  const [totalSteps, setTotalSteps] = useState(4);
 
   useEffect(() => {
-    if (localStorage.getItem('onboardingCompleted')) {
-      navigate('/');
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    if (onboardingData.role === 'creator') {
-      setTotalSteps(8); // Creator path has more steps
+    if (state.onboardingData.role === 'creator') {
+      setTotalSteps(5); // Creator: Role -> Content Type -> Skills -> Experience -> How did you hear
     } else {
-      setTotalSteps(7); // Learner path
+      setTotalSteps(4); // Learner: Role -> Interests -> Follow Creators -> How did you hear
     }
-  }, [onboardingData.role]);
+  }, [state.onboardingData.role]);
 
   const updateData = (field, value) => {
-    setOnboardingData((prev) => ({ ...prev, [field]: value }));
+    updateOnboardingData({ [field]: value });
   };
 
   const nextStep = () => setCurrentStep((prev) => prev + 1);
@@ -64,55 +35,56 @@ const OnboardingFlow = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await api.post('/user/onboarding', onboardingData);
-      updateUser(response.data.user);
-      localStorage.setItem('onboardingCompleted', 'true');
-      if (onboardingData.role === 'creator') {
-        navigate('/my-lessons');
-      } else {
-        navigate('/');
-      }
+      // Mock API call - in real app this would save to backend
+      completeOnboarding();
+      toast.success('Welcome to SkillRelay!');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Onboarding submission failed', error);
-      // Handle error state in UI
+      toast.error('Something went wrong. Please try again.');
     }
-  };
-
-  const steps = {
-    1: <StepRoleSelection nextStep={nextStep} updateData={updateData} />,
-    // Learner Path
-    2: onboardingData.role === 'learner' && <StepLearnerInterests nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.interests} />,
-    3: onboardingData.role === 'learner' && <StepLearnerFollowCreators nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.followedCreators} />,
-    4: onboardingData.role === 'learner' && <StepLearnerLearningStyle nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.learningStyle} />,
-    5: onboardingData.role === 'learner' && <StepLearnerGoals nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.learningGoals} />,
-    6: onboardingData.role === 'learner' && <StepHowDidYouHear nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.howDidYouHear} />,
-    7: onboardingData.role === 'learner' && <StepNotificationPreferences handleSubmit={handleSubmit} prevStep={prevStep} updateData={updateData} data={onboardingData.notificationPreferences} />,
-    // Creator Path
-    8: onboardingData.role === 'creator' && <StepCreatorContentType nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.contentType} />,
-    9: onboardingData.role === 'creator' && <StepCreatorSkills nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.skills} />,
-    10: onboardingData.role === 'creator' && <StepCreatorExperience nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.experienceLevel} />,
-    11: onboardingData.role === 'creator' && <StepCreatorGoals nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.contentGoals} />,
-    12: onboardingData.role === 'creator' && <StepCreatorMonetization nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.monetizationInterest} />,
-    13: onboardingData.role === 'creator' && <StepHowDidYouHear nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={onboardingData.howDidYouHear} />,
-    14: onboardingData.role === 'creator' && <StepNotificationPreferences handleSubmit={handleSubmit} prevStep={prevStep} updateData={updateData} data={onboardingData.notificationPreferences} />,
   };
 
   const renderStep = () => {
-    if (currentStep === 1) return steps[1];
-    if (onboardingData.role === 'learner') {
-        return steps[currentStep];
+    if (currentStep === 1) {
+      return <StepRoleSelection nextStep={nextStep} updateData={updateData} />;
     }
-    if (onboardingData.role === 'creator') {
-        return steps[currentStep - 1 + 8];
+    
+    if (state.onboardingData.role === 'learner') {
+      switch (currentStep) {
+        case 2:
+          return <StepLearnerInterests nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={state.onboardingData.interests} />;
+        case 3:
+          return <StepLearnerFollowCreators nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={state.onboardingData.followedCreators} />;
+        case 4:
+          return <StepHowDidYouHear handleSubmit={handleSubmit} prevStep={prevStep} updateData={updateData} data={state.onboardingData.howDidYouHear} />;
+        default:
+          return null;
+      }
     }
-  }
+    
+    if (state.onboardingData.role === 'creator') {
+      switch (currentStep) {
+        case 2:
+          return <StepCreatorContentType nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={state.onboardingData.contentType} />;
+        case 3:
+          return <StepCreatorSkills nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={state.onboardingData.skills} />;
+        case 4:
+          return <StepCreatorExperience nextStep={nextStep} prevStep={prevStep} updateData={updateData} data={state.onboardingData.experienceLevel} />;
+        case 5:
+          return <StepHowDidYouHear handleSubmit={handleSubmit} prevStep={prevStep} updateData={updateData} data={state.onboardingData.howDidYouHear} />;
+        default:
+          return null;
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
         <ProgressIndicator currentStep={currentStep} totalSteps={totalSteps} />
-        <div className="mt-8">
-            {renderStep()}
+        <div className="mt-8 animate-fade-in">
+          {renderStep()}
         </div>
       </div>
     </div>

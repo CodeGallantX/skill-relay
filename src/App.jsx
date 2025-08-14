@@ -4,6 +4,17 @@ import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import OnboardingPage from './pages/OnboardingPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ExplorePage } from './pages/ExplorePage';
+import { TrendingPage } from './pages/TrendingPage';
+import FollowingPage from './pages/FollowingPage';
+import LibraryPage from './pages/LibraryPage';
+import MyLessonsPage from './pages/MyLessonsPage';
+import LikedPage from './pages/LikedPage';
+import WatchLaterPage from './pages/WatchLaterPage';
+import FavoritesPage from './pages/FavoritesPage';
+import CategoryPage from './pages/CategoryPage';
+import SettingsPage from './pages/SettingsPage';
+import HelpPage from './pages/HelpPage';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { Toaster } from 'sonner';
 import RequireAuth from './components/auth/RequireAuth';
@@ -12,9 +23,6 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 import ProfilePage from './pages/ProfilePage';
 import EmailVerification from './components/auth/EmailVerification';
-import { ExplorePage } from './pages/ExplorePage';
-import MyLessonsPage from './pages/MyLessonsPage';
-import { TrendingPage } from './pages/TrendingPage';
 
 function App() {
   return (
@@ -39,8 +47,16 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/dashboard/explore" element={<ExplorePage />} />
             <Route path="/dashboard/trending" element={<TrendingPage />} />
+            <Route path="/dashboard/following" element={<FollowingPage />} />
+            <Route path="/dashboard/library" element={<LibraryPage />} />
+            <Route path="/dashboard/my-lessons" element={<MyLessonsPage />} />
+            <Route path="/dashboard/liked" element={<LikedPage />} />
+            <Route path="/dashboard/watch-later" element={<WatchLaterPage />} />
+            <Route path="/dashboard/favorites" element={<FavoritesPage />} />
+            <Route path="/dashboard/category/:categoryName" element={<CategoryPage />} />
+            <Route path="/dashboard/settings" element={<SettingsPage />} />
+            <Route path="/dashboard/help" element={<HelpPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/my-lessons" element={<MyLessonsPage />} />
           </Route>
         </Routes>
       </Router>

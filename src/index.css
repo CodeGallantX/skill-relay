@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 :root {
-  font-family: 'Inter', 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Figtree', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   font-weight: 400;
   color-scheme: light dark;
@@ -12,7 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.75rem;
 
-  /* Enhanced Purple & Yellow Palette */
+  /* Enhanced Purple & Yellow Palette with High Contrast */
   --purple-50: #faf5ff;
   --purple-100: #f3e8ff;
   --purple-200: #e9d5ff;
@@ -37,22 +37,22 @@
   --yellow-900: #713f12;
   --yellow-950: #422006;
 
-  /* Light Theme Variables */
+  /* Light Theme Variables - High Contrast */
   --background: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover-foreground: #0a0a0a;
   --primary: var(--purple-600);
   --primary-foreground: #ffffff;
   --secondary: var(--yellow-400);
   --secondary-foreground: var(--purple-900);
   --muted: #f8fafc;
-  --muted-foreground: #64748b;
+  --muted-foreground: #475569;
   --accent: var(--yellow-100);
   --accent-foreground: var(--purple-900);
-  --destructive: #ef4444;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #e2e8f0;
   --input: #f1f5f9;
@@ -77,25 +77,25 @@
 }
 
 .dark {
-  /* Dark Theme Variables */
-  --background: #1f2937;
-  --foreground: #f9fafb;
-  --card: #374151;
-  --card-foreground: #f9fafb;
-  --popover: #374151;
-  --popover-foreground: #f9fafb;
+  /* Dark Theme Variables - High Contrast */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #1a1a1a;
+  --card-foreground: #fafafa;
+  --popover: #1a1a1a;
+  --popover-foreground: #fafafa;
   --primary: var(--purple-500);
   --primary-foreground: #ffffff;
   --secondary: var(--yellow-400);
   --secondary-foreground: var(--purple-900);
-  --muted: #4b5563;
-  --muted-foreground: #9ca3af;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
   --accent: var(--purple-800);
   --accent-foreground: var(--yellow-100);
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #4b5563;
-  --input: #374151;
+  --border: #404040;
+  --input: #262626;
   --ring: var(--purple-500);
 
   /* Chart colors */
@@ -106,7 +106,7 @@
   --chart-5: var(--purple-200);
 
   /* Sidebar colors */
-  --sidebar: #374151;
+  --sidebar: #1a1a1a;
   --sidebar-foreground: var(--yellow-50);
   --sidebar-primary: var(--yellow-400);
   --sidebar-primary-foreground: var(--purple-900);
@@ -208,6 +208,14 @@
     animation: bounceGentle 2s infinite;
   }
   
+  .animate-slide-in-left {
+    animation: slideInLeft 0.3s ease-out;
+  }
+  
+  .animate-slide-out-left {
+    animation: slideOutLeft 0.3s ease-in;
+  }
+  
   .gradient-text {
     @apply bg-gradient-to-r from-purple-600 to-yellow-500 bg-clip-text text-transparent;
   }
@@ -270,6 +278,24 @@
   }
 }
 
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -285,4 +311,38 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-primary/50;
+}
+
+/* OTP Input Styles */
+.otp-input {
+  @apply w-12 h-12 text-center text-xl font-bold border-2 border-border rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200;
+}
+
+.otp-input:focus {
+  @apply outline-none;
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+  .mobile-padding {
+    @apply px-4;
+  }
+  
+  .mobile-text {
+    @apply text-sm;
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, select, textarea {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
 }

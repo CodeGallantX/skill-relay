@@ -86,4 +86,49 @@ export const mockTrendingCreators = [
   { id: 'creator-a', name: 'Creator Alpha', avatar: 'https://i.pravatar.cc/150?img=1', followers: '1.2M' },
   { id: 'creator-b', name: 'Creator Beta', avatar: 'https://i.pravatar.cc/150?img=2', followers: '900K' },
   { id: 'creator-c', name: 'Creator Gamma', avatar: 'https://i.pravatar.cc/150?img=3', followers: '750K' },
+  { id: 'creator-d', name: 'Sarah Chen', avatar: 'https://i.pravatar.cc/150?img=4', followers: '650K', verified: true },
+  { id: 'creator-e', name: 'Marcus Johnson', avatar: 'https://i.pravatar.cc/150?img=5', followers: '580K', verified: true },
+  { id: 'creator-f', name: 'Aisha Patel', avatar: 'https://i.pravatar.cc/150?img=6', followers: '420K', verified: false },
+];
+
+export const mockInterests = [
+  { id: 'programming', name: 'Programming' },
+  { id: 'design', name: 'Design' },
+  { id: 'marketing', name: 'Marketing' },
+  { id: 'music', name: 'Music' },
+  { id: 'fitness', name: 'Fitness' },
+  { id: 'cooking', name: 'Cooking' },
+  { id: 'photography', name: 'Photography' },
+  { id: 'business', name: 'Business' },
+  { id: 'art', name: 'Art' },
+  { id: 'writing', name: 'Writing' },
+  { id: 'language', name: 'Language Learning' },
+  { id: 'science', name: 'Science' },
+];
+
+export const mockContentTypes = [
+  'Video Tutorials',
+  'Live Streams',
+  'Courses',
+  'Quick Tips',
+  'Workshops',
+  'Podcasts'
+];
+
+export const mockSkills = [
+  { id: 'tech', name: 'Technology', subcategories: ['Web Development', 'Mobile Apps', 'AI/ML', 'Data Science'] },
+  { id: 'creative', name: 'Creative', subcategories: ['Graphic Design', 'Video Editing', 'Photography', 'Music Production'] },
+  { id: 'business', name: 'Business', subcategories: ['Marketing', 'Sales', 'Finance', 'Management'] },
+  { id: 'lifestyle', name: 'Lifestyle', subcategories: ['Cooking', 'Fitness', 'Travel', 'Fashion'] },
+  { id: 'education', name: 'Education', subcategories: ['Languages', 'Science', 'Math', 'History'] },
+];
+
+export const mockHowDidYouHear = [
+  'Social Media',
+  'Friend Recommendation',
+  'Google Search',
+  'YouTube',
+  'Advertisement',
+  'Blog/Article',
+  'Other'
 ];

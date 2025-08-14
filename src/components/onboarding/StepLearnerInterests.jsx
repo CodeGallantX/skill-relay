@@ -2,25 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { api } from '../../lib/api';
-import { mockCategories } from '../../lib/mockData';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { mockInterests } from '@/lib/mockData';
+import { Sparkles } from 'lucide-react';
 
 const StepLearnerInterests = ({ nextStep, prevStep, updateData, data }) => {
-  const [interests, setInterests] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState(data);
-
-  useEffect(() => {
-    const fetchInterests = async () => {
-      try {
-        const response = await api.get('/categories');
-        setInterests(response.data);
-      } catch (error) {
-        console.error('Failed to fetch interests', error);
-        setInterests(mockCategories);
-      }
-    };
-    fetchInterests();
-  }, []);
 
   const toggleInterest = (interest) => {
     setSelectedInterests((prev) =>
@@ -34,26 +21,42 @@ const StepLearnerInterests = ({ nextStep, prevStep, updateData, data }) => {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">What are you interested in?</h2>
-      <p className="text-muted-foreground mb-8">Select at least 3 interests to personalize your experience.</p>
-      <div className="flex flex-wrap gap-2 mb-8">
-        {interests.map((interest) => (
-          <Badge
-            key={interest.id}
-            variant={selectedInterests.includes(interest.id) ? 'default' : 'outline'}
-            onClick={() => toggleInterest(interest.id)}
-            className="cursor-pointer"
-          >
-            {interest.name}
-          </Badge>
-        ))}
-      </div>
-      <div className="flex justify-between">
-        <Button onClick={prevStep} variant="outline">Back</Button>
-        <Button onClick={handleNext} disabled={selectedInterests.length < 3}>Continue</Button>
-      </div>
-    </div>
+    <Card className="shadow-2xl border-0">
+      <CardHeader className="text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+          <Sparkles className="h-8 w-8 text-white" />
+        </div>
+        <CardTitle className="text-2xl font-bold gradient-text">What interests you?</CardTitle>
+        <CardDescription>
+          Select at least 3 topics to personalize your learning experience
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex flex-wrap gap-2">
+          {mockInterests.map((interest) => (
+            <Badge
+              key={interest.id}
+              variant={selectedInterests.includes(interest.id) ? 'default' : 'outline'}
+              onClick={() => toggleInterest(interest.id)}
+              className="cursor-pointer hover:scale-105 transition-transform text-sm py-2 px-4"
+            >
+              {interest.name}
+            </Badge>
+          ))}
+        </div>
+        
+        <div className="text-center text-sm text-muted-foreground">
+          {selectedInterests.length}/3 minimum selected
+        </div>
+        
+        <div className="flex justify-between pt-4">
+          <Button onClick={prevStep} variant="outline">Back</Button>
+          <Button onClick={handleNext} disabled={selectedInterests.length < 3}>
+            Continue ({selectedInterests.length})
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

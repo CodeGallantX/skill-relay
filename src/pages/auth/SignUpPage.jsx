@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import OTPVerification from '@/components/auth/OTPVerification';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,9 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 const SignUpPage = () => {
   const { register, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showOTP, setShowOTP] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,9 +26,18 @@ const SignUpPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/onboarding');
+      navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
+
+  // Check if we should show OTP screen
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('verify') === 'true' && params.get('email')) {
+      setShowOTP(true);
+      setUserEmail(params.get('email'));
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,12 +49,44 @@ const SignUpPage = () => {
     }
 
     try {
-      await register({ name, email, password, password_confirmation: passwordConfirmation });
-      navigate('/onboarding');
+      // Mock successful registration - in real app this would call the API
+      setUserEmail(email);
+      setShowOTP(true);
+      // Update URL to reflect OTP state
+      navigate(`/signup?verify=true&email=${encodeURIComponent(email)}`, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed.');
     }
   };
+
+  const handleOTPVerify = async (otpCode) => {
+    // Mock OTP verification - in real app this would verify with API
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  };
+
+  const handleOTPResend = async () => {
+    // Mock OTP resend - in real app this would call API
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 500);
+    });
+  };
+
+  if (showOTP) {
+    return (
+      <OTPVerification
+        email={userEmail}
+        onVerify={handleOTPVerify}
+        onResend={handleOTPResend}
+        loading={loading}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
