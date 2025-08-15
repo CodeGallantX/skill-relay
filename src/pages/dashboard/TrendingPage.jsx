@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { TrendingUp, Fire, Clock, Users, Tag } from 'lucide-react';
+import { TrendingUp, Siren as Fire, Clock, Users, Tag } from 'lucide-react';
 import VideoCard from '@/components/video/VideoCard';
 import { mockVideos } from '@/lib/mockData';
 
