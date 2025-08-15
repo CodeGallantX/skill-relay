@@ -1,6 +1,24 @@
 # Skill Relay Web
 
-This is a web application project, likely built to facilitate skill sharing, relaying information, or managing related processes. It leverages modern web development tools and libraries to provide a robust and scalable frontend experience.
+Skill Relay is a modern, feature-rich web application designed to facilitate skill sharing and learning. It provides a platform for creators to share their knowledge through lessons and for learners to discover and consume content tailored to their interests.
+
+## Current Stage: In Development
+
+The application is currently in the development phase. The core features have been implemented, and the application is functional. The focus is now on refining the user experience, adding more content, and preparing for a production release.
+
+## Progress So Far
+
+The application has made significant progress and includes the following features:
+
+*   **User Authentication:** A complete authentication system with sign-up, sign-in, email verification, and password reset functionality.
+*   **Onboarding Flow:** A multi-step onboarding process for both creators and learners to personalize their experience.
+*   **Dashboard:** A personalized dashboard for users to view their lessons, progress, and recommended content.
+*   **Explore Page:** A page for users to discover new lessons and creators.
+*   **Trending Page:** A page to showcase trending lessons, creators, and tags.
+*   **Feed:** A personalized feed of lessons from creators that the user follows.
+*   **User Profiles:** Public profiles for users to showcase their skills and lessons.
+*   **Settings Page:** A page for users to manage their account settings and preferences.
+*   **Dark Mode:** A theme switcher to toggle between light and dark mode.
 
 ## Table of Contents
 
@@ -13,6 +31,7 @@ This is a web application project, likely built to facilitate skill sharing, rel
   - [Building for Production](#building-for-production)
   - [Linting](#linting)
 - [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -20,13 +39,12 @@ This is a web application project, likely built to facilitate skill sharing, rel
 
 ## Features
 
-As a foundational web project, this application is set up to support:
-
 -   **Component-Based UI:** Built with React for a modular and reusable user interface.
 -   **Modern Styling:** Utilizes Tailwind CSS for utility-first styling, enabling rapid UI development.
 -   **Accessible UI Components:** Integrates Radix UI primitives and Shadcn UI components for high-quality, accessible, and customizable UI elements.
 -   **Client-Side Routing:** Configured with React Router DOM for seamless navigation within the application.
 -   **Efficient Data Fetching:** Incorporates TanStack React Query for managing server state, caching, and optimizing data interactions.
+-   **Real-time Communication:** Uses Socket.io for real-time features like notifications and chat.
 -   **Fast Development Experience:** Powered by Vite for a quick development server and optimized builds.
 -   **Code Quality:** Enforced with ESLint for maintaining consistent code style and catching potential issues.
 
@@ -39,6 +57,7 @@ As a foundational web project, this application is set up to support:
 -   **[Shadcn UI](https://ui.shadcn.com/)**: A collection of reusable components built with Radix UI and Tailwind CSS.
 -   **[React Router DOM](https://reactrouter.com/en/main)**: Declarative routing for React.
 -   **[TanStack React Query](https://tanstack.com/query/latest)**: Powerful asynchronous state management for React.
+-   **[Socket.io-client](https://socket.io/docs/v4/client-api/)**: Real-time, bidirectional event-based communication.
 -   **[ESLint](https://eslint.org/)**: Pluggable JavaScript linter.
 -   **[clsx](https://github.com/lukeed/clsx)**: A tiny (229B) utility for constructing `className` strings conditionally.
 -   **[lucide-react](https://lucide.dev/)**: A beautiful and consistent icon toolkit.
@@ -60,8 +79,8 @@ Make sure you have the following installed:
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/codegallantx/skill-relay
-    cd skill-relay-web
+    git clone https://github.com/codegallantx/skill-relay.git
+    cd skill-relay
     ```
 2.  Install the dependencies:
     ```bash
@@ -98,18 +117,30 @@ npm run lint
 
 ## Project Structure
 
+The project is organized as follows:
+
 ```
 skill-relay-web/
 ├── public/                 # Static assets
 ├── src/                    # Source code
 │   ├── assets/             # Images, icons, etc.
 │   ├── components/         # Reusable React components
-│   │   └── ui/             # Shadcn UI components
-│   ├── lib/                # Utility functions
-│   │   └── utils.js
+│   │   ├── auth/           # Authentication components
+│   │   ├── common/         # Common components (e.g., ErrorBoundary, LoadingSpinner)
+│   │   ├── dashboard/      # Dashboard components
+│   │   ├── explore/        # Explore page components
+│   │   ├── feed/           # Feed components
+│   │   ├── layout/         # Layout components (e.g., Header, Sidebar)
+│   │   ├── onboarding/     # Onboarding flow components
+│   │   ├── trending/       # Trending page components
+│   │   ├── ui/             # Shadcn UI components
+│   │   └── video/          # Video components
+│   ├── context/            # React context providers
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility functions and API clients
+│   ├── pages/              # Application pages
 │   ├── App.jsx             # Main application component
-│   ├── main.jsx            # Entry point for the React app
-│   └── ...
+│   └── main.jsx            # Entry point for the React app
 ├── .gitignore              # Git ignore file
 ├── components.json         # Shadcn UI configuration
 ├── eslint.config.js        # ESLint configuration
@@ -119,6 +150,18 @@ skill-relay-web/
 ├── vite.config.js          # Vite configuration
 └── README.md               # This documentation file
 ```
+
+## Available Scripts
+
+In the project directory, you can run the following scripts:
+
+| Script    | Description                                     |
+| :-------- | :---------------------------------------------- |
+| `npm run dev`     | Runs the app in the development mode.           |
+| `npm run build`   | Builds the app for production.                  |
+| `npm run lint`    | Runs the linter to check for code quality issues. |
+| `npm run preview` | Serves the production build locally.            |
+
 
 ## Usage
 
