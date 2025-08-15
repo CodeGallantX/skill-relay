@@ -18,8 +18,8 @@ import {
   FolderOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/useAuth';
-import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 
 const navigationItems = [
   { icon: Home, label: 'Home', href: '/dashboard' },
@@ -53,11 +53,11 @@ const categories = [
 export const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
-  const { state } = useApp();
+  const { role } = useOnboarding();
 
   const NavItem = ({ icon: Icon, label, href, requiresAuth = false, creatorOnly = false }) => {
     if (requiresAuth && !isAuthenticated) return null;
-    if (creatorOnly && state.onboardingData.role !== 'creator') return null;
+    if (creatorOnly && role !== 'creator') return null;
 
     const isActive = location.pathname === href || (href !== '/dashboard' && location.pathname.startsWith(href));
     

@@ -1,62 +1,85 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import { useOnboarding } from './context/OnboardingContext';
+
+// Pages
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import OnboardingPage from './pages/OnboardingPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { ExplorePage } from './pages/ExplorePage';
-import { TrendingPage } from './pages/TrendingPage';
-import FollowingPage from './pages/FollowingPage';
-import LibraryPage from './pages/LibraryPage';
-import MyLessonsPage from './pages/MyLessonsPage';
-import LikedPage from './pages/LikedPage';
-import WatchLaterPage from './pages/WatchLaterPage';
-import FavoritesPage from './pages/FavoritesPage';
-import CategoryPage from './pages/CategoryPage';
-import SettingsPage from './pages/SettingsPage';
-import HelpPage from './pages/HelpPage';
+
+// Dashboard Pages
+import DashboardLayout from './components/layout/DashboardLayout';
+import HomePage from './pages/dashboard/HomePage';
+import ExplorePage from './pages/dashboard/ExplorePage';
+import TrendingPage from './pages/dashboard/TrendingPage';
+import SettingsPage from './pages/dashboard/SettingsPage';
+
+// Components
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { Toaster } from 'sonner';
-import RequireAuth from './components/auth/RequireAuth';
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from './pages/auth/ResetPasswordPage';
-import AuthCallbackPage from './pages/auth/AuthCallbackPage';
-import ProfilePage from './pages/ProfilePage';
-import EmailVerification from './components/auth/EmailVerification';
+import { LoadingSpinner } from './components/common/LoadingSpinner';
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  const { completed } = useOnboarding();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/signin" replace />;
+  }
+  
+  if (!completed) {
+    return <Navigate to="/onboarding" replace />;
+  }
+  
+  return children;
+};
 
 function App() {
+  const { isAuthenticated } = useAuth();
+  const { completed } = useOnboarding();
+
   return (
     <ErrorBoundary>
-      <title>Skill Relay - The best platform to learn new skills</title>
-      <meta name="description" content="Skill Relay is a platform where you can learn new skills from the best creators. We have a wide range of courses and tutorials to help you learn everything you need to know." />
-      <link rel="canonical" href="https://skill-relay.com/" />
       <Router>
         <Routes>
-          {/* Public Routes */}
+          {/* Landing Page */}
           <Route path="/" element={<LandingPage />} />
+          
+          {/* Auth Routes */}
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/auth/callback" element={<AuthCallbackPage />} />
-          <Route path="/verify-email" element={<EmailVerification />} />
 
-          {/* Protected Routes */}
-          <Route element={<RequireAuth />}>
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/dashboard/explore" element={<ExplorePage />} />
-            <Route path="/dashboard/trending" element={<TrendingPage />} />
-            <Route path="/dashboard/following" element={<FollowingPage />} />
-            <Route path="/dashboard/library" element={<LibraryPage />} />
-            <Route path="/dashboard/my-lessons" element={<MyLessonsPage />} />
-            <Route path="/dashboard/liked" element={<LikedPage />} />
-            <Route path="/dashboard/watch-later" element={<WatchLaterPage />} />
-            <Route path="/dashboard/favorites" element={<FavoritesPage />} />
-            <Route path="/dashboard/category/:categoryName" element={<CategoryPage />} />
-            <Route path="/dashboard/settings" element={<SettingsPage />} />
-            <Route path="/dashboard/help" element={<HelpPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+          {/* Onboarding Route */}
+          <Route 
+            path="/onboarding" 
+            element={
+              isAuthenticated ? (
+                completed ? <Navigate to="/dashboard" replace /> : <OnboardingPage />
+              ) : (
+                <Navigate to="/signin" replace />
+              )
+            } 
+          />
+          
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<HomePage />} />
+            <Route path="explore" element={<ExplorePage />} />
+            <Route path="trending" element={<TrendingPage />} />
+            <Route path="following" element={<div className="p-8 text-center text-muted-foreground">Following page coming soon...</div>} />
+            <Route path="library" element={<div className="p-8 text-center text-muted-foreground">Library page coming soon...</div>} />
+            <Route path="my-lessons" element={<div className="p-8 text-center text-muted-foreground">My Lessons page coming soon...</div>} />
+            <Route path="liked" element={<div className="p-8 text-center text-muted-foreground">Liked page coming soon...</div>} />
+            <Route path="watch-later" element={<div className="p-8 text-center text-muted-foreground">Watch Later page coming soon...</div>} />
+            <Route path="favorites" element={<div className="p-8 text-center text-muted-foreground">Favorites page coming soon...</div>} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="help" element={<div className="p-8 text-center text-muted-foreground">Help page coming soon...</div>} />
           </Route>
         </Routes>
       </Router>

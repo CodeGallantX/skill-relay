@@ -1,197 +1,106 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { createContext, useContext, useState } from 'react';
 import { toast } from 'sonner';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
-  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
-  const [authToken, setAuthToken] = useState(null);
-  const [initializing, setInitializing] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  // Function to save auth data to localStorage
-  const saveAuthData = (token, userData) => {
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('authUser', JSON.stringify(userData));
-    setAuthToken(token);
-    setUser(userData);
-  };
-
-  // Function to clear auth data from localStorage
-  const clearAuthData = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('authUser');
-    setAuthToken(null);
-    setUser(null);
-  };
-
-  // For testing purposes only: set mock auth data
-  const setMockAuthData = (mockUser, mockToken) => {
-    saveAuthData(mockToken, mockUser);
-    setInitializing(false);
-  };
-
-  // Effect to initialize auth state from localStorage on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('authUser');
-
-    if (storedToken && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-        setAuthToken(storedToken);
-      } catch (e) {
-        console.error("Failed to parse stored user data:", e);
-        clearAuthData(); // Clear corrupted data
-      }
+  const register = async (userData) => {
+    setLoading(true);
+    try {
+      // Mock registration - simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.success('Registration successful! Please verify your email.');
+      return { success: true, email: userData.email };
+    } catch (error) {
+      toast.error('Registration failed. Please try again.');
+      throw error;
+    } finally {
+      setLoading(false);
     }
-    setInitializing(false);
-  }, []);
+  };
 
-  const registerMutation = useMutation({
-    mutationFn: async (payload) => {
-      const response = await api.post('/auth/register', payload);
-      return response.data;
-    },
-    onSuccess: async (data) => {
-      toast.success(data.message || 'Registration successful!');
-      saveAuthData(data.token, data.user); // Store token and user
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
-      // No automatic redirect here, let the component handle it
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Registration failed.');
-      setError(err);
-    },
-  });
+  const login = async (credentials) => {
+    setLoading(true);
+    try {
+      // Mock login - simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const mockUser = {
+        id: 1,
+        name: 'John Doe',
+        email: credentials.email,
+        avatar: 'https://i.pravatar.cc/150?img=1'
+      };
+      setUser(mockUser);
+      setIsAuthenticated(true);
+      toast.success('Login successful!');
+      return mockUser;
+    } catch (error) {
+      toast.error('Login failed. Please check your credentials.');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const loginMutation = useMutation({
-    mutationFn: async (payload) => {
-      // For testing purposes: check for mock credentials
-      if (payload.email === 'user@sr.com' && payload.password === 'Password123') {
-        const mockUser = {
-          id: 1,
-          name: "John Doe",
-          email: "user@sr.com",
-        };
-        const mockToken = "Bearer mock-token-123";
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({ status: 'success', user: mockUser, token: mockToken });
-          }, 500); // Simulate network delay
-        });
-      } else {
-        const response = await api.post('/auth/login', payload);
-        return response.data;
-      }
-    },
-    onSuccess: async (data) => {
-      toast.success(data.message || 'Login successful!');
-      saveAuthData(data.token, data.user); // Store token and user
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Login failed.');
-      setError(err);
-    },
-  });
-
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      // Assuming backend has a logout endpoint that invalidates the token
-      // If not, simply clear client-side data
-      try {
-        await api.post('/auth/logout'); // Example logout endpoint
-      } catch (err) {
-        console.warn("Logout API call failed, but clearing client-side data:", err);
-      }
-    },
-    onSuccess: () => {
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setUser(null);
+      setIsAuthenticated(false);
       toast.success('Logged out successfully!');
-      clearAuthData();
-      queryClient.clear(); // Clear all query cache on logout
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Logout failed.');
-      setError(err);
-    },
-  });
+    } catch (error) {
+      toast.error('Logout failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const verifyEmailMutation = useMutation({
-    mutationFn: async (payload) => {
-      const response = await api.post('/auth/verify-email', payload);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || 'Email verified successfully!');
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Email verification failed.');
-      setError(err);
-    },
-  });
+  const verifyOTP = async (email, otp) => {
+    setLoading(true);
+    try {
+      // Mock OTP verification
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (otp === '123456') {
+        toast.success('Email verified successfully!');
+        return { success: true };
+      } else {
+        throw new Error('Invalid OTP');
+      }
+    } catch (error) {
+      toast.error('Invalid OTP. Please try again.');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const resendOtpMutation = useMutation({
-    mutationFn: async (payload) => {
-      const response = await api.post('/auth/resend-otp', payload);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || 'OTP sent to your email.');
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to send OTP.');
-      setError(err);
-    },
-  });
-
-  const requestPasswordResetMutation = useMutation({
-    mutationFn: async (email) => {
-      const response = await api.post('/auth/password/email', { email });
-      return response.data;
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || 'Password reset link sent!');
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to send password reset link.');
-      setError(err);
-    },
-  });
-
-  const resetPasswordMutation = useMutation({
-    mutationFn: async (payload) => {
-      const response = await api.post('/auth/password/reset', payload);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || 'Password has been reset!');
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to reset password.');
-      setError(err);
-    },
-  });
+  const resendOTP = async (email) => {
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      toast.success('New OTP sent to your email.');
+    } catch (error) {
+      toast.error('Failed to send OTP.');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const authContextValue = {
     user,
-    authToken,
-    isAuthenticated: !!user && !!authToken,
-    initializing,
-    loading: registerMutation.isPending || loginMutation.isPending || logoutMutation.isPending || verifyEmailMutation.isPending || resendOtpMutation.isPending || requestPasswordResetMutation.isPending || resetPasswordMutation.isPending,
-    error,
-    register: registerMutation.mutateAsync,
-    login: loginMutation.mutateAsync,
-    logout: logoutMutation.mutateAsync,
-    verifyEmail: verifyEmailMutation.mutateAsync,
-    resendOtp: resendOtpMutation.mutateAsync,
-    requestPasswordReset: requestPasswordResetMutation.mutateAsync,
-    resetPassword: resetPasswordMutation.mutateAsync,
-    setMockAuthData, // Expose for testing
+    isAuthenticated,
+    loading,
+    register,
+    login,
+    logout,
+    verifyOTP,
+    resendOTP
   };
 
   return (

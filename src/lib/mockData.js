@@ -1,3 +1,117 @@
+// Mock video data for TikTok-style feed
+export const mockVideos = [
+  {
+    id: 1,
+    title: 'React Hooks in 60 Seconds',
+    description: 'Learn the basics of React Hooks quickly and efficiently',
+    thumbnail: 'https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+    duration: 60,
+    views: 15420,
+    likes: 1240,
+    comments: 89,
+    shares: 45,
+    isPremium: false,
+    price: 0,
+    creator: {
+      id: 1,
+      name: 'Sarah Chen',
+      avatar: 'https://i.pravatar.cc/150?img=1',
+      verified: true,
+      followers: '12.5K'
+    },
+    tags: ['React', 'JavaScript', 'WebDev'],
+    createdAt: '2024-01-15T10:00:00Z'
+  },
+  {
+    id: 2,
+    title: 'CSS Grid Layout Masterclass',
+    description: 'Master CSS Grid in just 2 minutes with practical examples',
+    thumbnail: 'https://images.pexels.com/photos/11035471/pexels-photo-11035471.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+    duration: 120,
+    views: 8930,
+    likes: 756,
+    comments: 34,
+    shares: 28,
+    isPremium: true,
+    price: 9.99,
+    creator: {
+      id: 2,
+      name: 'Marcus Johnson',
+      avatar: 'https://i.pravatar.cc/150?img=2',
+      verified: false,
+      followers: '8.2K'
+    },
+    tags: ['CSS', 'Design', 'Layout'],
+    createdAt: '2024-01-14T15:30:00Z'
+  },
+  {
+    id: 3,
+    title: 'Python Data Analysis Tips',
+    description: 'Quick tips for analyzing data with Python pandas',
+    thumbnail: 'https://images.pexels.com/photos/11035540/pexels-photo-11035540.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+    duration: 90,
+    views: 22100,
+    likes: 1890,
+    comments: 156,
+    shares: 78,
+    isPremium: false,
+    price: 0,
+    creator: {
+      id: 3,
+      name: 'Aisha Patel',
+      avatar: 'https://i.pravatar.cc/150?img=3',
+      verified: true,
+      followers: '25.8K'
+    },
+    tags: ['Python', 'Data', 'Analytics'],
+    createdAt: '2024-01-13T09:15:00Z'
+  },
+  {
+    id: 4,
+    title: 'UI/UX Design Principles',
+    description: 'Essential design principles every designer should know',
+    thumbnail: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+    duration: 150,
+    views: 18750,
+    likes: 1456,
+    comments: 92,
+    shares: 67,
+    isPremium: false,
+    price: 0,
+    creator: {
+      id: 4,
+      name: 'David Kim',
+      avatar: 'https://i.pravatar.cc/150?img=4',
+      verified: true,
+      followers: '19.3K'
+    },
+    tags: ['Design', 'UX', 'UI'],
+    createdAt: '2024-01-12T14:20:00Z'
+  },
+  {
+    id: 5,
+    title: 'Node.js API Development',
+    description: 'Build REST APIs with Node.js and Express in minutes',
+    thumbnail: 'https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+    duration: 180,
+    views: 12340,
+    likes: 987,
+    comments: 67,
+    shares: 43,
+    isPremium: true,
+    price: 14.99,
+    creator: {
+      id: 5,
+      name: 'Emma Wilson',
+      avatar: 'https://i.pravatar.cc/150?img=5',
+      verified: false,
+      followers: '7.9K'
+    },
+    tags: ['NodeJS', 'API', 'Backend'],
+    createdAt: '2024-01-11T11:45:00Z'
+  }
+];
+
 export const mockUserStats = {
   lessonsCompleted: 24,
   hoursLearned: 18.5,
