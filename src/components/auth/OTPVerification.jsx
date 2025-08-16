@@ -76,9 +76,14 @@ const OTPVerification = ({ email, onVerify, onResend, loading }) => {
 
   const handleVerify = async (otpCode) => {
     try {
-      await onVerify(otpCode);
+      const result = await onVerify(otpCode);
       toast.success('Email verified successfully!');
-      navigate('/onboarding');
+      // Navigate based on whether user is new or existing
+      if (result.isNewUser) {
+        navigate('/onboarding');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       toast.error('Invalid OTP. Please try again.');
       setOtp(['', '', '', '', '', '']);

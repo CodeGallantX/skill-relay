@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { socketManager } from '../lib/socket';
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/AuthContext';
 
 export const useSocket = () => {
   const { token, isAuthenticated } = useAuth();

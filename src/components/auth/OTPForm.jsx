@@ -61,7 +61,7 @@ const OTPForm = ({ email, onSuccess, onBack }) => {
     const pastedData = e.clipboardData.getData('text').slice(0, 6);
     const newOtp = pastedData.split('').concat(Array(6).fill('')).slice(0, 6);
     setOtp(newOtp);
-    
+
     // Focus last filled input or first empty one
     const lastFilledIndex = newOtp.findIndex(digit => digit === '');
     const focusIndex = lastFilledIndex === -1 ? 5 : Math.max(0, lastFilledIndex - 1);
@@ -75,8 +75,8 @@ const OTPForm = ({ email, onSuccess, onBack }) => {
 
   const handleVerify = async (otpCode) => {
     try {
-      await verifyOTP(email, otpCode);
-      onSuccess?.();
+      const result = await verifyOTP(email, otpCode);
+      onSuccess?.(result);
     } catch (error) {
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
@@ -85,7 +85,7 @@ const OTPForm = ({ email, onSuccess, onBack }) => {
 
   const handleResend = async () => {
     if (!canResend) return;
-    
+
     try {
       await resendOTP(email);
       setCanResend(false);
@@ -113,7 +113,7 @@ const OTPForm = ({ email, onSuccess, onBack }) => {
           <span className="font-semibold text-foreground">{email}</span>
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         <div className="flex justify-center space-x-3" onPaste={handlePaste}>
           {otp.map((digit, index) => (

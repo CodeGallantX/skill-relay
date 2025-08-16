@@ -14,8 +14,13 @@ const SignUpPage = () => {
     setShowOTP(true);
   };
 
-  const handleOTPSuccess = () => {
-    navigate('/onboarding');
+  const handleOTPSuccess = (result) => {
+    // After OTP verification, new users go to onboarding, existing users go to dashboard
+    if (result && result.isNewUser) {
+      navigate('/onboarding');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   const handleBackToSignUp = () => {

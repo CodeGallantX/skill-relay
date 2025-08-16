@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -42,9 +42,14 @@ const EmailVerification = () => {
       return;
     }
     try {
-      await verifyEmail({ email: user.email, otp });
+      const result = await verifyEmail({ email: user.email, otp });
       toast.success("Email verified successfully!");
-      navigate('/onboarding'); // Redirect to onboarding after successful verification
+      // Navigate based on whether user is new or existing
+      if (result.isNewUser) {
+        navigate('/onboarding');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       // Error handled by AuthContext's onError
     }

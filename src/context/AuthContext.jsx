@@ -7,12 +7,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
 
   const register = async (userData) => {
     setLoading(true);
     try {
       // Mock registration - simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsNewUser(true);
       toast.success('Registration successful! Please verify your email.');
       return { success: true, email: userData.email };
     } catch (error) {
@@ -32,10 +34,12 @@ export const AuthProvider = ({ children }) => {
         id: 1,
         name: 'John Doe',
         email: credentials.email,
-        avatar: 'https://i.pravatar.cc/150?img=1'
+        avatar: 'https://i.pravatar.cc/150?img=1',
+        hasCompletedOnboarding: true // Existing users have completed onboarding
       };
       setUser(mockUser);
       setIsAuthenticated(true);
+      setIsNewUser(false);
       toast.success('Login successful!');
       return mockUser;
     } catch (error) {
@@ -66,8 +70,18 @@ export const AuthProvider = ({ children }) => {
       // Mock OTP verification
       await new Promise(resolve => setTimeout(resolve, 1000));
       if (otp === '123456') {
+        // Create user after successful OTP verification
+        const verifiedUser = {
+          id: Math.random().toString(36).substring(2, 11),
+          name: 'New User',
+          email: email,
+          avatar: 'https://i.pravatar.cc/150?img=1',
+          hasCompletedOnboarding: false
+        };
+        setUser(verifiedUser);
+        setIsAuthenticated(true);
         toast.success('Email verified successfully!');
-        return { success: true };
+        return { success: true, isNewUser };
       } else {
         throw new Error('Invalid OTP');
       }
@@ -92,15 +106,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const completeUserOnboarding = () => {
+    if (user) {
+      setUser({
+        ...user,
+        hasCompletedOnboarding: true
+      });
+    }
+  };
+
   const authContextValue = {
     user,
     isAuthenticated,
     loading,
+    isNewUser,
     register,
     login,
     logout,
     verifyOTP,
-    resendOTP
+    resendOTP,
+    completeUserOnboarding
   };
 
   return (

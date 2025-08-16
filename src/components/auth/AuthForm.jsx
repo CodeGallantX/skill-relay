@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthContext';
 import { authApi } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -63,7 +63,8 @@ export const AuthForm = ({ onSuccess }) => {
     setIsLoading(true);
     try {
       await login(data);
-      onSuccess?.();
+      // Redirect to dashboard after successful login
+      window.location.href = '/dashboard';
     } catch (error) {
       console.error('Login error:', error);
     } finally {

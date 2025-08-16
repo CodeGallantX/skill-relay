@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { useAuth } from '@/context/AuthContext';
 import ProgressBar from '@/components/onboarding/ProgressBar';
 import RoleSelection from '@/components/onboarding/RoleSelection';
 import InterestSelection from '@/components/onboarding/InterestSelection';
@@ -14,6 +15,7 @@ import HowDidYouHear from '@/components/onboarding/HowDidYouHear';
 const OnboardingPage = () => {
   const navigate = useNavigate();
   const onboarding = useOnboarding();
+  const { completeUserOnboarding } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
 
   const getTotalSteps = () => {

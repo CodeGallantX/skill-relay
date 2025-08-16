@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Menu, Tag } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthContext';
 import LessonGrid from '@/components/explore/LessonGrid';
 import FilterSortBar from '@/components/explore/FilterSortBar';
 import { generateMockLessons } from '@/lib/mockData';
