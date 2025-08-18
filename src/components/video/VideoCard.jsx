@@ -178,11 +178,11 @@ const VideoCard = ({ video, onLike, onComment, onShare }) => {
             {/* Stats and Duration */}
             <div className="flex items-center justify-between text-xs text-gray-300">
               <div className="flex items-center space-x-4">
-                <span>{video.views.toLocaleString()} views</span>
+                {/* <span>{video.views.toLocaleString()} views</span> */}
                 <span>{formatDuration(video.duration)}</span>
               </div>
               <div className="text-xs">
-                {new Date(video.createdAt).toLocaleDateString()}
+                {/* {new Date(video.createdAt).toLocaleDateString()} */}
               </div>
             </div>
           </div>
@@ -201,7 +201,7 @@ const VideoCard = ({ video, onLike, onComment, onShare }) => {
           onClick={handleLike}
         >
           <Heart className={cn("h-6 w-6", isLiked && "fill-current")} />
-          <span className="text-xs">{likeCount.toLocaleString()}</span>
+          {/* <span className="text-xs">{likeCount.toLocaleString()}</span> */}
         </Button>
 
         <Button
@@ -211,7 +211,7 @@ const VideoCard = ({ video, onLike, onComment, onShare }) => {
           onClick={() => onComment?.(video.id)}
         >
           <MessageCircle className="h-6 w-6" />
-          <span className="text-xs">{video.comments.toLocaleString()}</span>
+          {/* <span className="text-xs">{video.comments.toLocaleString()}</span> */}
         </Button>
 
         <Button
@@ -221,7 +221,7 @@ const VideoCard = ({ video, onLike, onComment, onShare }) => {
           onClick={handleShare}
         >
           <Share2 className="h-6 w-6" />
-          <span className="text-xs">{video.shares.toLocaleString()}</span>
+          {/* <span className="text-xs">{video.shares.toLocaleString()}</span> */}
         </Button>
 
         <Button
