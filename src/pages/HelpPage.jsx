@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Header } from '@/components/layout/Header';
-import { Sidebar } from '@/components/layout/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -86,13 +84,8 @@ const HelpPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <title>Help & Support - Skill Relay</title>
       <meta name="description" content="Get help and support for using Skill Relay. Find answers to common questions and contact our support team." />
-      <Header />
       
       <div className="flex">
-        <Sidebar 
-          isOpen={isSidebarOpen} 
-          onClose={() => setIsSidebarOpen(false)} 
-        />
         
         <main className="flex-1 lg:ml-64">
           {/* Mobile Header */}
