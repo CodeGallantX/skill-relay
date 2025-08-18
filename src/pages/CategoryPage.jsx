@@ -41,18 +41,18 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <title>{displayName} - Skill Relay</title>
+    <div className="min-h-screen">
+      {/* <title>{displayName} - Skill Relay</title> */}
       <meta name="description" content={`Explore ${displayName} lessons and courses on Skill Relay.`} />
-      <Header />
+      {/* <Header /> */}
       
       <div className="flex">
-        <Sidebar 
+        {/* <Sidebar 
           isOpen={isSidebarOpen} 
           onClose={() => setIsSidebarOpen(false)} 
-        />
+        /> */}
         
-        <main className="flex-1 lg:ml-64">
+        <main className="flex-1">
           {/* Mobile Header */}
           <div className="lg:hidden p-4">
             <Button
@@ -70,7 +70,7 @@ const CategoryPage = () => {
               <h1 className="text-3xl font-bold gradient-text">{displayName}</h1>
             </div>
 
-            <Card className="mb-6">
+            <Card className="mb-6 bg-gray-200 dark:bg-gray-800">
               <CardHeader>
                 <CardTitle>Explore {displayName}</CardTitle>
                 <CardDescription>

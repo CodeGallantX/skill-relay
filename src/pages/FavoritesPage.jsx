@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Header } from '@/components/layout/Header';
-import { Sidebar } from '@/components/layout/Sidebar';
+// import { Header } from '@/components/layout/Header';
+// import { Sidebar } from '@/components/layout/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Menu, Bookmark } from 'lucide-react';
@@ -29,7 +29,7 @@ const FavoritesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <title>Favorites - Skill Relay</title>
       <meta name="description" content="Access your favorite lessons and courses on Skill Relay." />
       <Header />

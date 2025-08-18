@@ -66,7 +66,7 @@ export const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-white to-yellow-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-white ">
       <title>Dashboard - Skill Relay</title>
       <meta name="description" content="Your Skill Relay dashboard. Track your progress, continue watching lessons, and discover new content." />
       <Header />
@@ -118,7 +118,7 @@ export const DashboardPage = () => {
                   hasMore={hasMoreMainFeed}
                   isLoading={isMainFeedLoadingMore}
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
                     {mainFeedLessons.map((lesson) => (
                       <LessonCard key={lesson.id} lesson={lesson} />
                     ))}
