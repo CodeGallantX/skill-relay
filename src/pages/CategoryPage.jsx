@@ -70,7 +70,7 @@ const CategoryPage = () => {
               <h1 className="text-3xl font-bold gradient-text">{displayName}</h1>
             </div>
 
-            <Card className="mb-6 bg-gray-200 dark:bg-gray-800">
+            <Card className="mb-6 bg-background">
               <CardHeader>
                 <CardTitle>Explore {displayName}</CardTitle>
                 <CardDescription>
