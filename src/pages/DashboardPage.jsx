@@ -66,7 +66,7 @@ export const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white ">
+    <div className="min-h-screen bg-background">
       <title>Dashboard - Skill Relay</title>
       <meta name="description" content="Your Skill Relay dashboard. Track your progress, continue watching lessons, and discover new content." />
       <Header />

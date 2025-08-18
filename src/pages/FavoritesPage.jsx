@@ -29,7 +29,7 @@ const FavoritesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <title>Favorites - Skill Relay</title>
       <meta name="description" content="Access your favorite lessons and courses on Skill Relay." />
       <Header />

@@ -29,7 +29,7 @@ const LikedPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <title>Liked - Skill Relay</title>
       <meta name="description" content="View all the lessons you've liked on Skill Relay." />
       <Header />
