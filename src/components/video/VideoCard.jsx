@@ -178,6 +178,7 @@ const VideoCard = ({ video, onLike, onComment, onShare }) => {
             {/* Stats and Duration */}
             <div className="flex items-center justify-between text-xs text-gray-300">
               <div className="flex items-center space-x-4">
+                console.table("🚀 ~ space:", space)
                 {/* <span>{video.views.toLocaleString()} views</span> */}
                 <span>{formatDuration(video.duration)}</span>
               </div>

@@ -30,7 +30,7 @@ const StepHowDidYouHear = ({ nextStep, prevStep, handleSubmit, updateData, data 
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Select onValueChange={setSource} value={source}>
+        <Select onValueChange={setSource} value={source} className="w-full">
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Select how you found us" />
           </SelectTrigger>
