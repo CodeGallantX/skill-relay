@@ -1,591 +1,512 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Play, 
-  Upload, 
-  DollarSign, 
-  Star, 
-  Users, 
-  TrendingUp,
-  Check,
-  Menu,
-  X,
-  ChevronDown,
-  ArrowRight,
-  Zap,
-  Shield,
-  Globe,
-  Sun,
-  Moon
-} from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
-import VideoPlayerModal from '@/components/common/VideoPlayerModal';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
-const LandingPage = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const { theme, toggleTheme } = useTheme();
+/* -------------------- Demo content -------------------- */
+const demoCourses = [
+  { id: "c1", title: "Short-Form Editing", author: "Mia Clark", minutes: 6, emoji: "🎬" },
+  { id: "c2", title: "Public Speaking", author: "Sarah Foster", minutes: 7, emoji: "🎤" },
+  { id: "c3", title: "React Hooks 101", author: "Ada Lin", minutes: 5, emoji: "⚛️" },
+  { id: "c4", title: "Digital Painting", author: "Darnel Lee", minutes: 8, emoji: "🎨" },
+  { id: "c5", title: "Personal Brand", author: "Naomi Z.", minutes: 4, emoji: "✨" },
+];
+
+const learnerReviews = [
+  { id: "l1", name: "Sarah Chen", role: "UX Designer", text: "SkillRelay helped me learn React in just 2 weeks. The bite-sized format fits my schedule. I'm now earning $2k/mo sharing my design lessons.", stars: 5 },
+  { id: "l2", name: "Hakeem O.", role: "Student", text: "Daily micro-lessons kept me consistent. I built a portfolio and landed an internship.", stars: 5 },
+  { id: "l3", name: "Amara P.", role: "Marketing", text: "Clear, practical lessons with immediate results.", stars: 4 },
+];
+const creatorReviews = [
+  { id: "c1", name: "Marcus Johnson", role: "Marketing Expert", text: "10k+ learners and dependable payouts. Upload → publish in minutes. Best creator ROI so far.", stars: 5 },
+  { id: "c2", name: "Lena R.", role: "Illustrator", text: "Simple tools. Bundles and coupons give steady income without fuss.", stars: 5 },
+  { id: "c3", name: "Toby M.", role: "Engineer", text: "Fast to publish and solid analytics. Love it.", stars: 5 },
+];
+
+/* ====================================================== */
+
+export default function LandingPage() {
+  const nav = useNavigate();
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved) return saved === "dark";
+    return window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? true;
+  });
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [reviewTab, setReviewTab] = useState("learners");
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['home', 'features', 'testimonials', 'pricing'];
-      const scrollPosition = window.scrollY + 100;
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
-          }
+  const go = (to) => nav(to);
+
+  return (
+    <div className="min-h-screen w-screen max-w-[100vw] overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
+      {/* keyframes for marquee + hover-pause */}
+      <style>{`
+        @keyframes sr-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-      }
-    };
+        .sr-marquee:hover .sr-marquee-track { animation-play-state: paused; }
+      `}</style>
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      {/* =============================== NAV =============================== */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0B1120]/70 backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+          <button onClick={() => go("/")} className="flex items-center gap-3">
+            <div className="h-10 w-10 grid place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-bold shadow-[0_0_24px_rgba(59,130,246,.55)]">
+              SR
+            </div>
+            <span className="text-2xl font-bold tracking-tight">SkillRelay</span>
+          </button>
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
-  };
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-7 text-[15px] md:flex">
+            {[
+              ["Home", "#home"],
+              ["Courses", "#demo"],
+              ["Features", "#features"],
+              ["Testimonials", "#reviews"],
+              ["Pricing", "#pricing"],
+            ].map(([label, href]) => (
+              <a key={href} href={href} className="text-zinc-300 transition hover:text-white">
+                {label}
+              </a>
+            ))}
 
-  const NavLink = ({ href, children, onClick }) => (
+            <Button onClick={() => go("/signin")} variant="outline" className="rounded-xl border-white/20 bg-white/5 hover:bg-white/10">
+              Sign In
+            </Button>
+            <Button onClick={() => go("/signup")} className="rounded-xl px-5">
+              Get Started
+            </Button>
+
+            <ThemeToggle isDark={isDark} onToggle={() => setIsDark((v) => !v)} />
+          </nav>
+
+          {/* Mobile actions */}
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle isDark={isDark} onToggle={() => setIsDark((v) => !v)} />
+            <button
+              aria-label="Open menu"
+              onClick={() => setMobileOpen((s) => !s)}
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/5"
+            >
+              <div className="h-0.5 w-5 bg-white mb-1" />
+              <div className="h-0.5 w-5 bg-white mb-1" />
+              <div className="h-0.5 w-5 bg-white" />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile sheet */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-white/10 bg-[#0B1120]/90 backdrop-blur-xl">
+            <div className="mx-auto max-w-7xl flex flex-col gap-3 px-4 sm:px-6 lg:px-8 py-4 text-base">
+              {[
+                ["Home", "#home"],
+                ["Courses", "#demo"],
+                ["Features", "#features"],
+                ["Testimonials", "#reviews"],
+                ["Pricing", "#pricing"],
+              ].map(([label, href]) => (
+                <a key={href} onClick={() => setMobileOpen(false)} href={href} className="py-2">
+                  {label}
+                </a>
+              ))}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  onClick={() => { setMobileOpen(false); go("/signin"); }}
+                  variant="outline"
+                  className="flex-1 rounded-xl border-white/20 bg-white/5 hover:bg-white/10"
+                >
+                  Sign In
+                </Button>
+                <Button onClick={() => { setMobileOpen(false); go("/signup"); }} className="flex-1 rounded-xl">
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* ============================== HERO ============================== */}
+      <section id="home" className="relative overflow-hidden border-b border-white/10 bg-[#0A0F1C]">
+        {/* glows */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute left-[-12%] top-[8%] h-[32rem] w-[32rem] rounded-full bg-blue-500/20 blur-3xl" />
+          <div className="absolute right-[-6%] top-[22%] h-[26rem] w-[26rem] rounded-full bg-indigo-500/20 blur-3xl" />
+        </div>
+        {/* grid */}
+        <div className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:56px_56px]" />
+
+        <div className="mx-auto max-w-7xl grid items-center gap-12 px-4 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-12 lg:grid-cols-2">
+          {/* Left */}
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-semibold bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 text-black shadow-[0_8px_30px_rgba(251,191,36,.35)] ring-1 ring-white/10">
+              <span>🚀</span> Now in Beta — Join Early Access
+            </span>
+
+            <h1 className="mt-5 max-w-full break-words text-[38px] leading-tight font-extrabold sm:text-[42px] md:text-6xl lg:text-7xl">
+              <span className="block">Learn better.</span>
+              <span className="block bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-300 bg-clip-text text-transparent">
+                Teach confidently. Earn fairly.
+              </span>
+            </h1>
+
+            <p className="mt-5 max-w-xl text-[15px] md:text-base text-zinc-300">
+              Short, high-impact lessons from real practitioners. Create courses in minutes and grow your audience.
+            </p>
+
+            {/* Mobile quick demo */}
+            <MiniDemoCarousel />
+
+            {/* CTAs */}
+            <div className="mt-7 flex flex-col gap-4 sm:flex-row max-w-[25%] md:w-full">
+              <Button
+                onClick={() => go("/signup")}
+                className="w-full rounded-xl px-7 py-5 text-base shadow-[0_10px_40px_rgba(37,99,235,.4)] hover:shadow-[0_10px_50px_rgba(37,99,235,.55)] sm:w-auto"
+              >
+                Sign Up Free
+              </Button>
+              <Button
+                onClick={() => document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" })}
+                variant="outline"
+                className="w-full rounded-xl border-blue-500/40 px-7 py-5 text-base text-blue-300  sm:w-auto"
+              >
+                Browse Courses
+              </Button>
+              {/* <Button
+                onClick={() => go("/signup")}
+                variant="outline"
+                className="w-full rounded-xl border-white/20 px-7 py-5 text-base text-zinc-100 hover:bg-white/10 sm:w-auto"
+              >
+                Teach on SkillRelay
+              </Button> */}
+            </div>
+
+            {/* Desktop stats */}
+            <div className="mt-10 hidden items-center gap-12 md:flex">
+              <Stat to={10000} label="Active Learners" />
+              <Stat to={500} label="Expert Creators" />
+              <Stat to={50000} label="Skill Videos" />
+            </div>
+
+            <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-zinc-400 md:hidden">
+              <li className="flex items-center gap-2"><span>⚡</span> Bite-size lessons</li>
+              <li className="flex items-center gap-2"><span>💳</span> Creator payouts</li>
+              <li className="flex items-center gap-2"><span>⭐</span> Ratings & reviews</li>
+            </ul>
+          </div>
+
+          {/* Right: desktop preview */}
+          <div className="hidden lg:block">
+            <HeroPreview />
+          </div>
+        </div>
+      </section>
+
+      {/* ======================= DEMO COURSES (MARQUEE) =================== */}
+      <section id="demo" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-14 pb-4 overflow-x-hidden">
+        <div className="flex items-end justify-between">
+          <h2 className="text-3xl font-bold md:text-4xl">Trending Demo Courses</h2>
+          <div className="text-sm text-zinc-400">Auto-slides →</div>
+        </div>
+
+        {/* marquee container */}
+        <div className="sr-marquee relative mt-7 -mx-4 px-4 overflow-hidden">
+          {/* Track is 2x width to loop seamlessly */}
+          <div
+            className="sr-marquee-track flex gap-4 md:gap-6 w-[200%]"
+            style={{ animation: "sr-marquee 20s linear infinite" }}
+          >
+            {[...demoCourses, ...demoCourses].map((c, idx) => (
+              <CourseCard key={c.id + "-" + idx} c={c} onEnroll={() => go("/signup")} />
+            ))}
+          </div>
+
+          {/* gradient masks */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0A0F1C] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#0A0F1C] to-transparent" />
+        </div>
+      </section>
+
+      {/* ============================ FEATURES ============================ */}
+      <FeaturesSection />
+
+      {/* ============================ REVIEWS ============================= */}
+      <section id="reviews" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-20 overflow-x-hidden">
+        <h2 className="text-center text-4xl font-extrabold md:text-5xl">
+          Loved by <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+            {reviewTab === "learners" ? "Learners" : "Creators"}
+          </span>
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-zinc-400">
+          Join thousands who are already transforming their careers.
+        </p>
+
+        <div className="mx-auto mt-6 flex w-full max-w-sm gap-2 rounded-2xl border border-white/10 bg-white/5 p-1 md:max-w-none md:border-0 md:bg-transparent md:p-0">
+          <TabBtn active={reviewTab === "learners"} onClick={() => setReviewTab("learners")}>Learners</TabBtn>
+          <TabBtn active={reviewTab === "creators"} onClick={() => setReviewTab("creators")}>Creators</TabBtn>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {(reviewTab === "learners" ? learnerReviews : creatorReviews).map((r) => (
+            <ReviewCard key={r.id} r={r} />
+          ))}
+        </div>
+      </section>
+
+      {/* =========================== PRICING CTA ========================== */}
+      <section id="pricing" className="border-t border-white/10">
+        <div className="relative">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-indigo-600 via-blue-600 to-amber-400 opacity-95" />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <h3 className="text-4xl md:text-5xl font-extrabold text-white">Ready to Transform Your Skills?</h3>
+            <p className="mx-auto mt-4 max-w-2xl text-white/90">
+              Join thousands of learners and creators already building their future. Start today with our free plan.
+            </p>
+            <div className="mt-7 flex flex-col justify-center gap-4 sm:flex-row">
+              <Button onClick={() => go("/signup")} className="rounded-2xl px-8 py-4 text-lg">Get Started Free</Button>
+              <Button onClick={() => go("/signin")} variant="outline" className="rounded-2xl px-8 py-4 text-lg bg-white/10 text-white border-white/30 hover:bg-white/20">Sign In</Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================== FOOTER ============================ */}
+      <FooterPro />
+    </div>
+  );
+}
+
+/* ====================== Subcomponents ====================== */
+
+function TabBtn({ active, onClick, children }) {
+  return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-        activeSection === href
-          ? 'text-primary bg-primary/10'
-          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-      }`}
+      className={`flex-1 rounded-xl px-4 py-2 text-sm transition ${active ? "bg-blue-500/25 text-blue-100" : "bg-white/0 text-zinc-300 hover:bg-white/10"}`}
     >
       {children}
     </button>
   );
+}
 
+function MiniDemoCarousel() {
   return (
-    <div className="min-h-screen bg-background">
-      <title>Skill Relay - Master Skills in Minutes</title>
-      <meta name="description" content="Discover bite-sized video lessons from experts, create your own content, and monetize your knowledge on the world's fastest-growing skill-sharing platform." />
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">SR</span>
+    <div className="mt-7 md:hidden">
+      <div className="mb-2 text-sm text-zinc-400">Quick look</div>
+      {/* full-bleed on mobile to avoid visual clipping */}
+      <div className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
+        <div className="flex gap-4 pr-2">
+          {demoCourses.slice(0, 4).map((c) => (
+            <div key={c.id} className="snap-start min-w-[88vw] sm:min-w-[360px] rounded-2xl border border-white/10 bg-[#0D1426] p-5">
+              <div className="grid h-40 place-items-center rounded-xl bg-blue-500/10 text-5xl ring-1 ring-blue-400/10">
+                {c.emoji}
               </div>
-              <span className="font-bold text-xl gradient-text">SkillRelay</span>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-2">
-              <NavLink href="home" onClick={() => scrollToSection('home')}>
-                Home
-              </NavLink>
-              <NavLink href="features" onClick={() => scrollToSection('features')}>
-                Features
-              </NavLink>
-              <NavLink href="testimonials" onClick={() => scrollToSection('testimonials')}>
-                Testimonials
-              </NavLink>
-              <NavLink href="pricing" onClick={() => scrollToSection('pricing')}>
-                Pricing
-              </NavLink>
+              <div className="mt-3 text-[17px] font-semibold leading-snug">{c.title}</div>
+              <div className="text-[12px] text-zinc-400">{c.author} • {c.minutes} min</div>
             </div>
-
-            {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-3">
-              <Button variant="ghost" onClick={toggleTheme}>
-                {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-              </Button>
-              <Button variant="ghost" asChild>
-                <Link to="/signin">Sign In</Link>
-              </Button>
-              <Button asChild className="shadow-glow">
-                <Link to="/signup">Get Started</Link>
-              </Button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-
-          {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border animate-fade-in">
-              <div className="flex flex-col space-y-2">
-                <NavLink href="home" onClick={() => scrollToSection('home')}>
-                  Home
-                </NavLink>
-                <NavLink href="features" onClick={() => scrollToSection('features')}>
-                  Features
-                </NavLink>
-                <NavLink href="testimonials" onClick={() => scrollToSection('testimonials')}>
-                  Testimonials
-                </NavLink>
-                <NavLink href="pricing" onClick={() => scrollToSection('pricing')}>
-                  Pricing
-                </NavLink>
-                <div className="pt-4 flex flex-col space-y-2">
-                  <Button variant="ghost" asChild>
-                    <Link to="/signin">Sign In</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link to="/signup">Get Started</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+          ))}
         </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section id="home" className="pt-24 pb-16 md:pt-32 md:pb-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <Badge variant="secondary" className="mb-6 px-4 py-2 text-sm font-medium">
-              🚀 Now in Beta - Join Early Access
-            </Badge>
-            
-            <h1 className="mb-6 gradient-text">
-              Master Skills in Minutes, Not Hours
-            </h1>
-            
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              Discover bite-sized video lessons from experts, create your own content, 
-              and monetize your knowledge on the world's fastest-growing skill-sharing platform.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" asChild className="shadow-glow text-lg px-8 py-6">
-                <Link to="/signup">
-                  Start Learning Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6" onClick={() => setIsDemoModalOpen(true)}>
-                <Play className="mr-2 h-5 w-5" />
-                Watch Demo
-              </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-md mx-auto">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">10K+</div>
-                <div className="text-sm text-muted-foreground">Active Learners</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">500+</div>
-                <div className="text-sm text-muted-foreground">Expert Creators</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">50K+</div>
-                <div className="text-sm text-muted-foreground">Skill Videos</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-16 md:py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-slide-up">
-            <h2 className="mb-4">Everything You Need to Succeed</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Whether you're learning new skills or sharing your expertise, 
-              we've got the tools to help you thrive.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Feature 1 */}
-            <Card className="group hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg">
-              <CardHeader className="text-center pb-4">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Play className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-xl">Learn Anything</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base leading-relaxed">
-                  Access thousands of bite-sized video lessons covering everything from 
-                  coding to cooking, designed for busy professionals.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            {/* Feature 2 */}
-            <Card className="group hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg" style={{ animationDelay: '0.1s' }}>
-              <CardHeader className="text-center pb-4">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Upload className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-xl">Share Your Expertise</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base leading-relaxed">
-                  Create and upload your own skill videos with our intuitive tools. 
-                  Build your audience and establish yourself as an expert.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            {/* Feature 3 */}
-            <Card className="group hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg" style={{ animationDelay: '0.2s' }}>
-              <CardHeader className="text-center pb-4">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <DollarSign className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-xl">Monetize Your Skills</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base leading-relaxed">
-                  Turn your passion into profit with flexible monetization options. 
-                  Earn from subscriptions, one-time purchases, or tips.
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-slide-up">
-            <h2 className="mb-4">Loved by Creators & Learners</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of satisfied users who are already transforming their careers.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Testimonial 1 */}
-            <Card className="hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg">
-              <CardHeader>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold">
-                    S
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Sarah Chen</CardTitle>
-                    <CardDescription>UX Designer</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  "SkillRelay helped me learn React in just 2 weeks. The bite-sized format 
-                  was perfect for my busy schedule. Now I'm earning $2k/month sharing my design skills!"
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Testimonial 2 */}
-            <Card className="hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg" style={{ animationDelay: '0.1s' }}>
-              <CardHeader>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white font-bold">
-                    M
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Marcus Johnson</CardTitle>
-                    <CardDescription>Marketing Expert</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  "The platform is incredibly intuitive. I've built a following of 10K+ learners 
-                  and it's become my primary income source. The community is amazing!"
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Testimonial 3 */}
-            <Card className="hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg" style={{ animationDelay: '0.2s' }}>
-              <CardHeader>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold">
-                    A
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Aisha Patel</CardTitle>
-                    <CardDescription>Data Scientist</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  "As someone who learns better with short videos, this platform is perfect. 
-                  I've mastered Python, SQL, and machine learning fundamentals here."
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-16 md:py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-slide-up">
-            <h2 className="mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Choose the plan that fits your learning journey. Upgrade or downgrade anytime.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Free Plan */}
-            <Card className="hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl mb-2">Free</CardTitle>
-                <div className="text-4xl font-bold mb-2">$0</div>
-                <CardDescription>Perfect for getting started</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Access to 100+ free lessons</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Basic video quality</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Community access</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Mobile app access</span>
-                  </div>
-                </div>
-                <Button className="w-full mt-8" variant="outline" asChild>
-                  <Link to="/signup">Get Started Free</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="hover:shadow-glow transition-all duration-300 animate-scale-in border-2 border-primary shadow-glow relative" style={{ animationDelay: '0.1s' }}>
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-gradient-to-r from-purple-600 to-yellow-500 text-white px-4 py-1">
-                  Most Popular
-                </Badge>
-              </div>
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl mb-2">Pro</CardTitle>
-                <div className="text-4xl font-bold mb-2">$19</div>
-                <CardDescription>For serious learners</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Unlimited access to all lessons</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>HD video quality</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Offline downloads</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Priority support</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Create up to 10 lessons/month</span>
-                  </div>
-                </div>
-                <Button className="w-full mt-8 shadow-glow" asChild>
-                  <Link to="/signup">Start Pro Trial</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Creator Plan */}
-            <Card className="hover:shadow-glow transition-all duration-300 animate-scale-in border-0 shadow-lg" style={{ animationDelay: '0.2s' }}>
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl mb-2">Creator</CardTitle>
-                <div className="text-4xl font-bold mb-2">$49</div>
-                <CardDescription>For professional creators</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Everything in Pro</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Unlimited lesson creation</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Advanced analytics</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Custom branding</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Revenue sharing program</span>
-                  </div>
-                </div>
-                <Button className="w-full mt-8" variant="outline" asChild>
-                  <Link to="/signup">Start Creating</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-purple-600 via-purple-700 to-yellow-500 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto animate-fade-in">
-            <h2 className="mb-6 text-white">Ready to Transform Your Skills?</h2>
-            <p className="text-xl mb-8 text-purple-100 leading-relaxed">
-              Join thousands of learners and creators who are already building their future. 
-              Start your journey today with our free plan.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6 shadow-glow-yellow" asChild>
-                <Link to="/signup">
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-purple-700">
-                <Link to="/signin">Sign In</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-12 bg-muted/50 border-t border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            {/* Brand */}
-            <div className="space-y-4">
-              <Link to="/" className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">SR</span>
-                </div>
-                <span className="font-bold text-xl gradient-text">SkillRelay</span>
-              </Link>
-              <p className="text-muted-foreground leading-relaxed">
-                The fastest way to learn and share skills through bite-sized video lessons.
-              </p>
-            </div>
-
-            {/* Product */}
-            <div className="space-y-4">
-              <h4 className="font-semibold">Product</h4>
-              <div className="space-y-2">
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Features</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Mobile App</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">API</Link>
-              </div>
-            </div>
-
-            {/* Company */}
-            <div className="space-y-4">
-              <h4 className="font-semibold">Company</h4>
-              <div className="space-y-2">
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">About</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Careers</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-              </div>
-            </div>
-
-            {/* Support */}
-            <div className="space-y-4">
-              <h4 className="font-semibold">Support</h4>
-              <div className="space-y-2">
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Help Center</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Community</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
-                <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-muted-foreground text-sm">
-              © {new Date().getFullYear()} SkillRelay. All rights reserved.
-            </p>
-            <div className="flex items-center space-x-4 mt-4 md:mt-0">
-              <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Globe className="h-5 w-5" />
-              </Link>
-              <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Users className="h-5 w-5" />
-              </Link>
-              <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <TrendingUp className="h-5 w-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-      {isDemoModalOpen && (
-        <VideoPlayerModal 
-          videoUrl="https://www.w3schools.com/html/mov_bbb.mp4" 
-          onClose={() => setIsDemoModalOpen(false)} 
-        />
-      )}
+      </div>
     </div>
   );
-};
+}
 
-export default LandingPage;
+function CourseCard({ c, onEnroll }) {
+  return (
+    <article className="snap-start min-w-[88vw] md:min-w-[360px] rounded-3xl border border-white/10 bg-[#0D1426] p-5 md:p-6 transition hover:border-blue-500/40">
+      <div className="grid h-48 place-items-center rounded-2xl bg-blue-500/10 text-6xl ring-1 ring-blue-400/10">
+        <span aria-hidden>{c.emoji}</span>
+      </div>
+      <h3 className="mt-4 text-[19px] md:text-[20px] font-semibold leading-snug">{c.title}</h3>
+      <p className="text-[12px] text-zinc-400">{c.author}</p>
+      <div className="mt-2 flex items-center gap-2 text-[12px] text-blue-300">
+        <span className="rounded bg-blue-500/10 px-2 py-0.5">{c.minutes} min</span>
+        <span className="text-zinc-500">Demo</span>
+      </div>
+      <Button onClick={onEnroll} className="mt-4 w-full rounded-xl">
+        Enroll for Free (Demo)
+      </Button>
+    </article>
+  );
+}
+
+function ReviewCard({ r }) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-[#131a2d] p-6 md:p-8 shadow-[0_12px_48px_rgba(2,6,23,.45)]">
+      <div className="flex items-center gap-3">
+        <div className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 text-white font-semibold">
+          {r.name[0]}
+        </div>
+        <div>
+          <div className="font-semibold text-[15px]">{r.name}</div>
+          <div className="text-[12px] text-zinc-400">{r.role}</div>
+        </div>
+      </div>
+      <div className="mt-3 text-yellow-300">
+        {"★".repeat(r.stars)}<span className="text-zinc-600">{"★".repeat(5 - r.stars)}</span>
+      </div>
+      <p className="mt-3 text-[15px] text-zinc-300 leading-relaxed">{r.text}</p>
+    </div>
+  );
+}
+
+function FeaturesSection() {
+  const items = [
+    {
+      title: "Learn Anything",
+      body: "Access thousands of bite-size video lessons—from coding to cooking—designed for busy professionals.",
+      icon: <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-500 text-white text-lg">▶</div>,
+    },
+    {
+      title: "Share Your Expertise",
+      body: "Create and upload your own skill videos with intuitive tools. Build your audience and become an expert.",
+      icon: <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-400 text-black text-lg">⤴</div>,
+    },
+    {
+      title: "Monetize Your Skills",
+      body: "Earn from subscriptions, one-time purchases, or tips with transparent, creator-first payouts.",
+      icon: <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-400 text-white text-lg">$</div>,
+    },
+  ];
+
+  return (
+    <section id="features" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-14 overflow-x-hidden">
+      <h2 className="text-center text-4xl font-extrabold md:text-5xl">Everything You Need to Succeed</h2>
+      <p className="mx-auto mt-4 max-w-2xl text-center text-zinc-400">
+        Whether you’re learning new skills or sharing your expertise, we’ve got the tools to help you thrive.
+      </p>
+
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {items.map((f) => (
+          <div key={f.title} className="rounded-3xl border border-white/10 bg-[#121a2b] p-7 md:p-8 shadow-[0_20px_60px_rgba(2,6,23,.45)]">
+            <div>{f.icon}</div>
+            <h3 className="mt-4 text-xl font-semibold">{f.title}</h3>
+            <p className="mt-2 text-[15px] text-zinc-300 leading-relaxed">{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HeroPreview() {
+  return (
+    <div className="w-full">
+      <div className="relative mx-auto w-full max-w-[620px] rounded-3xl border border-white/10 bg-[#0D1426] p-5 ring-1 ring-blue-500/30 shadow-[0_40px_140px_-20px_rgba(37,99,235,.6)]">
+        <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-blue-400/80" />
+            <span className="text-xs text-zinc-300">SKILLRELAY</span>
+          </div>
+          <div className="rounded bg-blue-500/10 px-2 py-0.5 text-[10px] text-blue-300">Live</div>
+        </div>
+
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {["Setup Basics", "Digital Painting", "Public Speaking", "React Hooks", "UI Motion", "Personal Brand"].map((t, i) => (
+            <div key={i} className="group rounded-2xl border border-white/10 bg-gradient-to-br from-[#111A33] to-[#0B1226] p-3 transition hover:border-blue-500/40">
+              <div className="h-20 rounded-xl bg-blue-500/10 ring-1 ring-blue-400/10 group-hover:ring-blue-400/30" />
+              <div className="mt-2 text-[13px] font-semibold leading-5">{t}</div>
+              <div className="text-[11px] text-zinc-400">Demo Author</div>
+              <div className="mt-1 inline-block rounded bg-blue-500/10 px-2 py-0.5 text-[10px] text-blue-300">5–9 min</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="pointer-events-none absolute -inset-1 rounded-3xl bg-blue-500/10 blur-2xl" />
+      </div>
+    </div>
+  );
+}
+
+function FooterPro() {
+  return (
+    <footer className="border-t border-white/10 bg-[#0b1120]">
+      <div className="mx-auto max-w-7xl grid gap-10 px-4 sm:px-6 lg:px-8 py-16 md:py-20 md:grid-cols-4">
+        <div>
+          <div className="mb-4 flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-bold">
+              SR
+            </div>
+            <span className="text-lg font-semibold">SkillRelay</span>
+          </div>
+          <p className="max-w-xs text-sm text-zinc-400">
+            The fastest way to learn and share skills through bite-size video lessons.
+          </p>
+        </div>
+
+        <FooterCol title="Product" links={["Features", "Pricing", "Mobile App", "API"]} />
+        <FooterCol title="Company" links={["About", "Blog", "Careers", "Contact"]} />
+        <FooterCol title="Support" links={["Help Center", "Community", "Privacy Policy", "Terms of Service"]} />
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 text-sm text-zinc-500">
+          © {new Date().getFullYear()} SkillRelay. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function FooterCol({ title, links }) {
+  return (
+    <div>
+      <h4 className="text-sm font-semibold text-zinc-200">{title}</h4>
+      <ul className="mt-3 space-y-2 text-sm text-zinc-400">
+        {links.map((l) => (
+          <li key={l}>
+            <a href="#" className="hover:text-zinc-200">{l}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ThemeToggle({ isDark, onToggle }) {
+  return (
+    <button
+      onClick={onToggle}
+      aria-label="Toggle theme"
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 hover:bg-white/10"
+    >
+      {isDark ? (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+      ) : (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="5" strokeWidth="2" />
+          <path strokeWidth="2" strokeLinecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+function Stat({ to, label }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    let i = 0;
+    const steps = 30, dur = 800;
+    const tick = setInterval(() => {
+      i++; setN(Math.round((to * i) / steps));
+      if (i >= steps) clearInterval(tick);
+    }, dur / steps);
+    return () => {};
+  }, [to]);
+  return (
+    <div className="text-center">
+      <div className="text-3xl md:text-4xl font-bold">{n.toLocaleString()}+</div>
+      <div className="text-sm text-zinc-400">{label}</div>
+    </div>
+  );
+}
