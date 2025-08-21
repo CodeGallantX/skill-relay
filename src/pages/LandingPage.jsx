@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button";
 
 /* -------------------- Demo content -------------------- */
@@ -89,7 +90,7 @@ export default function LandingPage() {
           {/* Mobile actions */}
           <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle isDark={isDark} onToggle={() => setIsDark((v) => !v)} />
-            <button
+{/*             <button
               aria-label="Open menu"
               onClick={() => setMobileOpen((s) => !s)}
               className="grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/5"
@@ -97,7 +98,10 @@ export default function LandingPage() {
               <div className="h-0.5 w-5 bg-white mb-1" />
               <div className="h-0.5 w-5 bg-white mb-1" />
               <div className="h-0.5 w-5 bg-white" />
-            </button>
+            </button> */}
+            <Menu aria-label="Open menu"
+              onClick={() => setMobileOpen((s) => !s)}
+              className="rounded-xl border border-white/15 bg-white/5" />
           </div>
         </div>
 
