@@ -7,6 +7,7 @@ import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import EmailVerificationPage from './pages/auth/EmailVerificationPage';
+import EmailVerificationConfirmationPage from './pages/auth/EmailVerificationConfirmationPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'; // New Import
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';   // New Import
 import OnboardingPage from './pages/OnboardingPage';
@@ -63,6 +64,7 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/email-verification" element={<EmailVerificationPage />} />
+          <Route path="/auth/verify-email-confirmation" element={<EmailVerificationConfirmationPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} /> {/* New Route */}
           <Route path="/reset-password" element={<ResetPasswordPage />} />   {/* New Route */}
 
