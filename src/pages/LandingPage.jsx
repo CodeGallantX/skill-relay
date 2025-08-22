@@ -312,9 +312,14 @@ function MiniDemoCarousel() {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
-    let scrollInterval;
+    let scrollIntervalId; // Renamed to avoid conflict and clarify it's an ID
     const startAutoScrolling = () => {
-      scrollInterval = setInterval(() => {
+      scrollIntervalId = setInterval(() => { // Assigned to the declared variable
+        console.log('Auto-scrolling:', {
+          scrollLeft: scrollContainer.scrollLeft,
+          clientWidth: scrollContainer.clientWidth,
+          scrollWidth: scrollContainer.scrollWidth,
+        });
         if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth) {
           scrollContainer.scrollLeft = 0;
         } else {
@@ -326,7 +331,7 @@ function MiniDemoCarousel() {
     };
 
     stopScrolling.current = () => { // Assign to ref's current
-      clearInterval(scrollInterval);
+      clearInterval(scrollIntervalId); // Clear the correct ID
     };
 
     // Mouse drag functionality
@@ -337,6 +342,11 @@ function MiniDemoCarousel() {
       scrollLeft.current = scrollContainer.scrollLeft;
       scrollContainer.style.cursor = 'grabbing';
       scrollContainer.style.userSelect = 'none';
+      console.log('MouseDown:', {
+        isDragging: isDragging.current,
+        startX: startX.current,
+        scrollLeft: scrollLeft.current,
+      });
     };
 
     const handleMouseMove = (e) => {
@@ -345,6 +355,13 @@ function MiniDemoCarousel() {
       const x = e.pageX - scrollContainer.offsetLeft;
       const walk = (x - startX.current) * 1.5; // Multiplier for faster drag
       scrollContainer.scrollLeft = scrollLeft.current - walk;
+      console.log('MouseMove:', {
+        isDragging: isDragging.current,
+        pageX: e.pageX,
+        x: x,
+        walk: walk,
+        newScrollLeft: scrollContainer.scrollLeft,
+      });
     };
 
     const handleMouseUp = () => {
