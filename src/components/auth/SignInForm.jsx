@@ -43,7 +43,7 @@ const SignInForm = ({ onSuccess }) => {
   return (
     <Card className="shadow-2xl border-0 animate-scale-in">
       <CardHeader className="text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-300 flex items-center justify-center shadow-lg">
           <span className="text-white font-bold text-2xl">SR</span>
         </div>
         <CardTitle className="text-3xl font-bold gradient-text">Welcome Back!</CardTitle>
