@@ -16,7 +16,7 @@ api.interceptors.request.use(
   (config) => {
     const authToken = localStorage.getItem('authToken');
     if (authToken) {
-      config.headers.Authorization = authToken;
+      config.headers.Authorization = `Bearer ${authToken}`; // Add Bearer prefix
     }
     return config;
   },
@@ -30,7 +30,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      const { message, errors } = error.response.data;
+      const { message, errors, code } = error.response.data; // Destructure code as well
 
       // Handle 401 Unauthorized errors
       if (error.response.status === 401) {
@@ -50,6 +50,8 @@ api.interceptors.response.use(
       } else {
         toast.error('An unexpected error occurred.');
       }
+      // Return the error with its code for specific handling in components
+      return Promise.reject({ ...error, code });
     } else if (error.request) {
       toast.error('No response received from server. Please check your internet connection.');
     } else {
@@ -60,6 +62,12 @@ api.interceptors.response.use(
 );
 
 export const authApi = {
+  register: (userData) => api.post('/auth/register', userData),
+  login: (credentials) => api.post('/auth/login', { ...credentials, device: 'web' }),
+  resendEmailVerification: (email) => api.post('/auth/email/resend', { email }),
+  forgotPassword: (email) => api.post('/auth/password/email', { email }),
+  resetPassword: (data) => api.post('/auth/password/reset', data),
+  logout: () => api.post('/auth/logout'),
   socialAuthRedirect: (provider) => `${API_BASE_URL}/auth/${provider}/redirect`,
 };
 

@@ -12,18 +12,18 @@
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.75rem;
 
-  /* Enhanced Purple & Yellow Palette with High Contrast */
-  --purple-50: #faf5ff;
-  --purple-100: #f3e8ff;
-  --purple-200: #e9d5ff;
-  --purple-300: #d8b4fe;
-  --purple-400: #c084fc;
-  --purple-500: #a855f7;
-  --purple-600: #9333ea;
-  --purple-700: #7c3aed;
-  --purple-800: #6b21a8;
-  --purple-900: #581c87;
-  --purple-950: #3b0764;
+  /* Blue & Yellow Palette with High Contrast */
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-300: #93c5fd;
+  --blue-400: #60a5fa;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+  --blue-900: #1e3a8a;
+  --blue-950: #172554;
 
   --yellow-50: #fefce8;
   --yellow-100: #fef9c3;
@@ -44,73 +44,73 @@
   --card-foreground: #0a0a0a;
   --popover: #ffffff;
   --popover-foreground: #0a0a0a;
-  --primary: var(--purple-600);
+  --primary: var(--blue-600); /* Changed from purple */
   --primary-foreground: #ffffff;
   --secondary: var(--yellow-400);
-  --secondary-foreground: var(--purple-900);
+  --secondary-foreground: var(--blue-900); /* Changed from purple */
   --muted: #f8fafc;
   --muted-foreground: #475569;
   --accent: var(--yellow-100);
-  --accent-foreground: var(--purple-900);
+  --accent-foreground: var(--blue-900); /* Changed from purple */
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #e2e8f0;
   --input: #f1f5f9;
-  --ring: var(--purple-600);
+  --ring: var(--blue-600); /* Changed from purple */
 
   /* Chart colors */
-  --chart-1: var(--purple-600);
+  --chart-1: var(--blue-600); /* Changed from purple */
   --chart-2: var(--yellow-500);
-  --chart-3: var(--purple-400);
+  --chart-3: var(--blue-400); /* Changed from purple */
   --chart-4: var(--yellow-300);
-  --chart-5: var(--purple-800);
+  --chart-5: var(--blue-800); /* Changed from purple */
 
   /* Sidebar colors */
   --sidebar: #ffffff;
-  --sidebar-foreground: var(--purple-900);
-  --sidebar-primary: var(--purple-600);
+  --sidebar-foreground: var(--blue-900); /* Changed from purple */
+  --sidebar-primary: var(--blue-600); /* Changed from purple */
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: var(--yellow-100);
-  --sidebar-accent-foreground: var(--purple-800);
+  --sidebar-accent-foreground: var(--blue-800); /* Changed from purple */
   --sidebar-border: var(--border);
-  --sidebar-ring: var(--purple-600);
+  --sidebar-ring: var(--blue-600); /* Changed from purple */
 }
 
 .dark {
-  /* Dark Theme Variables - High Contrast */
-  --background: #0a0a0a;
+  /* Dark Theme Variables - High Contrast (Blue Shades) */
+  --background: #0D1117; /* Very dark blue */
   --foreground: #fafafa;
-  --card: #1a1a1a;
+  --card: #161B22; /* Darker blue for cards */
   --card-foreground: #fafafa;
-  --popover: #1a1a1a;
+  --popover: #161B22; /* Darker blue for popovers */
   --popover-foreground: #fafafa;
-  --primary: var(--purple-500);
+  --primary: var(--blue-500);
   --primary-foreground: #ffffff;
   --secondary: var(--yellow-400);
-  --secondary-foreground: var(--purple-900);
-  --muted: #262626;
+  --secondary-foreground: var(--blue-900);
+  --muted: #21262D; /* Dark blue for muted backgrounds */
   --muted-foreground: #a3a3a3;
-  --accent: var(--purple-800);
+  --accent: var(--blue-800);
   --accent-foreground: var(--yellow-100);
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #404040;
-  --input: #262626;
-  --ring: var(--purple-500);
+  --border: #30363D; /* Dark blue for borders */
+  --input: #1F242C; /* Dark blue for input fields */
+  --ring: var(--blue-500);
 
   /* Chart colors */
-  --chart-1: var(--purple-400);
+  --chart-1: var(--blue-400);
   --chart-2: var(--yellow-400);
-  --chart-3: var(--purple-600);
+  --chart-3: var(--blue-600);
   --chart-4: var(--yellow-200);
-  --chart-5: var(--purple-200);
+  --chart-5: var(--blue-200);
 
   /* Sidebar colors */
-  --sidebar: #1a1a1a;
+  --sidebar: #161B22; /* Darker blue for sidebar */
   --sidebar-foreground: var(--yellow-50);
   --sidebar-primary: var(--yellow-400);
-  --sidebar-primary-foreground: var(--purple-900);
-  --sidebar-accent: var(--purple-600);
+  --sidebar-primary-foreground: var(--blue-900);
+  --sidebar-accent: var(--blue-600);
   --sidebar-accent-foreground: var(--yellow-100);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--yellow-400);
@@ -168,6 +168,7 @@
     @apply bg-background text-foreground font-medium;
     margin: 0;
     min-height: 100vh;
+    overflow-x: hidden; /* Added for global overflow-x-hidden */
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -217,7 +218,7 @@
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-purple-600 to-yellow-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-600 to-blue-300 bg-clip-text text-transparent; /* Changed to blue gradient */
   }
   
   .glass-effect {
@@ -225,7 +226,7 @@
   }
   
   .shadow-glow {
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.15); /* Changed from purple (blue-600 rgba) */
   }
   
   .shadow-glow-yellow {

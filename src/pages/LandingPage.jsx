@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button";
@@ -57,7 +57,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0B1120]/70 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
           <button onClick={() => go("/")} className="flex items-center gap-3">
-            <div className="h-10 w-10 grid place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-bold shadow-[0_0_24px_rgba(59,130,246,.55)]">
+            <div className="h-10 w-10 grid place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-300 text-white text-sm font-bold shadow-[0_0_24px_rgba(59,130,246,.55)]">
               SR
             </div>
             <span className="text-2xl font-bold tracking-tight">SkillRelay</span>
@@ -147,21 +147,21 @@ export default function LandingPage() {
         {/* grid */}
         <div className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:56px_56px]" />
 
-        <div className="mx-auto max-w-7xl grid items-center gap-12 px-4 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-12 lg:grid-cols-2">
+        <div className="mx-auto max-w-7xl grid items-center gap-12 px-6 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-12 lg:grid-cols-2">
           {/* Left */}
           <div>
             <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-semibold bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 text-black shadow-[0_8px_30px_rgba(251,191,36,.35)] ring-1 ring-white/10">
               <span>🚀</span> Now in Beta — Join Early Access
             </span>
 
-            <h1 className="mt-5 max-w-full break-words text-[38px] leading-tight font-extrabold sm:text-[42px] md:text-6xl lg:text-7xl">
+            <h1 className="mt-5 max-w-full break-words text-wrap text-[32px] leading-tight font-extrabold sm:text-[42px] md:text-6xl lg:text-7xl">
               <span className="block">Learn better.</span>
               <span className="block bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-300 bg-clip-text text-transparent">
                 Teach confidently. Earn fairly.
               </span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-[15px] md:text-base text-zinc-300">
+            <p className="mt-5 text-[15px] md:text-base text-zinc-300">
               Short, high-impact lessons from real practitioners. Create courses in minutes and grow your audience.
             </p>
 
@@ -301,14 +301,104 @@ function TabBtn({ active, onClick, children }) {
 }
 
 function MiniDemoCarousel() {
+  const scrollRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const stopScrolling = useRef(() => {}); // Use ref for stopScrolling to avoid re-creation
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let scrollIntervalId; // Renamed to avoid conflict and clarify it's an ID
+    const startAutoScrolling = () => {
+      scrollIntervalId = setInterval(() => { // Assigned to the declared variable
+        console.log('Auto-scrolling:', {
+          scrollLeft: scrollContainer.scrollLeft,
+          clientWidth: scrollContainer.clientWidth,
+          scrollWidth: scrollContainer.scrollWidth,
+        });
+        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth) {
+          scrollContainer.scrollLeft = 0;
+        } else {
+          const cardWidth = scrollContainer.querySelector('.snap-start')?.offsetWidth || 0;
+          const gap = 16;
+          scrollContainer.scrollLeft += (cardWidth + gap);
+        }
+      }, 3000);
+    };
+
+    stopScrolling.current = () => { // Assign to ref's current
+      clearInterval(scrollIntervalId); // Clear the correct ID
+    };
+
+    // Mouse drag functionality
+    const handleMouseDown = (e) => {
+      isDragging.current = true;
+      stopScrolling.current(); // Stop auto-scrolling when dragging starts
+      startX.current = e.pageX - scrollContainer.offsetLeft;
+      scrollLeft.current = scrollContainer.scrollLeft;
+      scrollContainer.style.cursor = 'grabbing';
+      scrollContainer.style.userSelect = 'none';
+      console.log('MouseDown:', {
+        isDragging: isDragging.current,
+        startX: startX.current,
+        scrollLeft: scrollLeft.current,
+      });
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging.current) return;
+      e.preventDefault(); // Prevent text selection and other default behaviors
+      const x = e.pageX - scrollContainer.offsetLeft;
+      const walk = (x - startX.current) * 1.5; // Multiplier for faster drag
+      scrollContainer.scrollLeft = scrollLeft.current - walk;
+      console.log('MouseMove:', {
+        isDragging: isDragging.current,
+        pageX: e.pageX,
+        x: x,
+        walk: walk,
+        newScrollLeft: scrollContainer.scrollLeft,
+      });
+    };
+
+    const handleMouseUp = () => {
+      isDragging.current = false;
+      startAutoScrolling(); // Resume auto-scrolling when dragging stops
+      scrollContainer.style.cursor = 'grab';
+      scrollContainer.style.userSelect = 'auto';
+    };
+
+    // Initial setup
+    startAutoScrolling();
+    scrollContainer.style.cursor = 'grab';
+
+    // Event listeners for mouse drag
+    scrollContainer.addEventListener('mousedown', handleMouseDown);
+    scrollContainer.addEventListener('mousemove', handleMouseMove);
+    scrollContainer.addEventListener('mouseup', handleMouseUp);
+    scrollContainer.addEventListener('mouseleave', handleMouseUp); // Treat mouse leave as mouse up
+
+    // Clean up on unmount
+    return () => {
+      stopScrolling.current();
+      scrollContainer.removeEventListener('mousedown', handleMouseDown);
+      scrollContainer.removeEventListener('mousemove', handleMouseMove);
+      scrollContainer.removeEventListener('mouseup', handleMouseUp);
+      scrollContainer.removeEventListener('mouseleave', handleMouseUp);
+    };
+  }, []); // Empty dependency array means this runs once on mount and unmount
+
   return (
-    <div className="mt-7 md:hidden">
+    <div className="mt-7 md:hidden px-6"> {/* Added px-6 here */}
       <div className="mb-2 text-sm text-zinc-400">Quick look</div>
       {/* full-bleed on mobile to avoid visual clipping */}
-      <div className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
+      <div ref={scrollRef} className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
         <div className="flex gap-4 pr-2">
-          {demoCourses.slice(0, 4).map((c) => (
-            <div key={c.id} className="snap-start min-w-[88vw] sm:min-w-[360px] rounded-2xl border border-white/10 bg-[#0D1426] p-5">
+          {demoCourses.map((c) => ( // Removed .slice(0, 4)
+            <div key={c.id} className="snap-start min-w-[calc(100vw-32px)] sm:min-w-[360px] rounded-2xl border border-white/10 bg-[#0D1426] p-5">
               <div className="grid h-40 place-items-center rounded-xl bg-blue-500/10 text-5xl ring-1 ring-blue-400/10">
                 {c.emoji}
               </div>
@@ -435,7 +525,7 @@ function FooterPro() {
       <div className="mx-auto max-w-7xl grid gap-10 px-4 sm:px-6 lg:px-8 py-16 md:py-20 md:grid-cols-4">
         <div>
           <div className="mb-4 flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-bold">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-300 text-white text-sm font-bold">
               SR
             </div>
             <span className="text-lg font-semibold">SkillRelay</span>
