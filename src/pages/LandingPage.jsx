@@ -147,7 +147,7 @@ export default function LandingPage() {
         {/* grid */}
         <div className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:56px_56px]" />
 
-        <div className="mx-auto max-w-7xl grid items-center gap-12 px-4 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-12 lg:grid-cols-2">
+        <div className="mx-auto max-w-7xl grid items-center gap-12 px-6 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-12 lg:grid-cols-2">
           {/* Left */}
           <div>
             <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-semibold bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 text-black shadow-[0_8px_30px_rgba(251,191,36,.35)] ring-1 ring-white/10">
