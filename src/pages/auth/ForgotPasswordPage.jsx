@@ -1,58 +1,54 @@
-import { useState } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Mail, ArrowLeft } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Mail, Loader2 } from 'lucide-react';
+import AuthLayout from '../../components/auth/AuthLayout';
+import { useAuth } from '../../context/AuthContext';
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
 
 const ForgotPasswordPage = () => {
-  const { requestPasswordReset, loading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const { forgotPassword, loading } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
+  const form = useForm({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
+  });
+
+  const handleSubmit = async (data) => {
     try {
-      await requestPasswordReset(email);
-      setMessage('If an account with that email exists, a password reset link has been sent.');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send password reset link.');
+      await forgotPassword(data.email);
+    } catch (error) {
+      // Error handled by AuthContext and toast
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+    <AuthLayout>
       <title>Forgot Password - Skill Relay</title>
-      <meta name="description" content="Reset your Skill Relay password. Enter your email to receive a password reset link." />
-      <div className="w-full max-w-md">
-        {/* Back to Sign In */}
-        <div className="mb-6">
-          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
-            <Link to="/signin">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Sign In
-            </Link>
-          </Button>
-        </div>
-
-        <Card className="shadow-2xl border-0 animate-scale-in">
+      <meta name="description" content="Recover your SkillRelay account password." />
+      <Card className="shadow-2xl border-0 animate-scale-in">
         <CardHeader className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
-              <Mail className="h-8 w-8 text-white" />
-            </div>
-            <CardTitle className="text-3xl font-bold gradient-text">Forgot Password?</CardTitle>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-yellow-500 flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-2xl">SR</span>
+          </div>
+          <CardTitle className="text-3xl font-bold gradient-text">Forgot Password?</CardTitle>
           <CardDescription>
-              No worries! Enter your email and we'll send you a reset link.
+            Enter your email address below and we'll send you a link to reset your password.
           </CardDescription>
         </CardHeader>
-          <CardContent className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -61,41 +57,33 @@ const ForgotPasswordPage = () => {
                   id="email"
                   type="email"
                   placeholder="your@example.com"
-                    className="pl-10 h-12 text-base"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  className="pl-10 h-12 text-base"
+                  {...form.register('email')}
                 />
               </div>
+              {form.formState.errors.email && (
+                <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
+              )}
             </div>
-              
-              {message && (
-                <div className="p-3 rounded-lg bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
-                  <p className="text-sm text-green-700 dark:text-green-300 text-center">{message}</p>
-                </div>
+
+            <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
+              {loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                'Send Reset Link'
               )}
-              
-              {error && (
-                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-                  <p className="text-sm text-destructive text-center">{error}</p>
-                </div>
-              )}
-              
-              <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
-              {loading ? <LoadingSpinner size="sm" /> : 'Send Reset Link'}
             </Button>
           </form>
-            
-            <div className="text-center text-sm text-muted-foreground">
+
+          <div className="text-center text-sm text-muted-foreground">
             Remember your password?{' '}
-              <Link to="/signin" className="text-primary hover:underline font-medium">
+            <Link to="/signin" className="text-primary hover:underline font-medium">
               Sign In
             </Link>
           </div>
         </CardContent>
       </Card>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 

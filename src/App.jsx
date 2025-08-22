@@ -6,6 +6,9 @@ import { useOnboarding } from './context/OnboardingContext';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
+import EmailVerificationPage from './pages/auth/EmailVerificationPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'; // New Import
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';   // New Import
 import OnboardingPage from './pages/OnboardingPage';
 
 // Dashboard Pages
@@ -59,6 +62,9 @@ function App() {
           {/* Auth Routes */}
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/email-verification" element={<EmailVerificationPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} /> {/* New Route */}
+          <Route path="/reset-password" element={<ResetPasswordPage />} />   {/* New Route */}
 
           {/* Onboarding Route */}
           <Route 

@@ -30,10 +30,13 @@ const SignInForm = ({ onSuccess }) => {
 
   const handleSubmit = async (data) => {
     try {
-      await login(data);
-      onSuccess?.();
+      const user = await login(data);
+      if (user) { // Check if user object is returned (login successful)
+        onSuccess?.();
+      }
     } catch (error) {
-      console.error('Login error:', error);
+      // Error handling is primarily done in AuthContext via toast.error
+      console.error('Login error in component:', error);
     }
   };
 

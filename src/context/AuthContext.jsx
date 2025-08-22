@@ -1,24 +1,48 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { authApi } from '../lib/api'; // Import authApi
 
 const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Set to true initially to load user from localStorage
   const [isNewUser, setIsNewUser] = useState(false);
+
+  useEffect(() => {
+    const loadUserFromLocalStorage = () => {
+      try {
+        const storedUser = localStorage.getItem('authUser');
+        const storedToken = localStorage.getItem('authToken');
+        if (storedUser && storedToken) {
+          setUser(JSON.parse(storedUser));
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("Failed to load user from local storage:", error);
+        localStorage.removeItem('authUser');
+        localStorage.removeItem('authToken');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUserFromLocalStorage();
+  }, []);
 
   const register = async (userData) => {
     setLoading(true);
     try {
-      // Mock registration - simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsNewUser(true);
-      toast.success('Registration successful! Please verify your email.');
-      return { success: true, email: userData.email };
+      const response = await authApi.register(userData);
+      if (response.data.success) {
+        setIsNewUser(true);
+        toast.success(response.data.message || 'Registration successful! Please verify your email.');
+        return { success: true, email: userData.email };
+      }
+      return { success: false };
     } catch (error) {
-      toast.error('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
       throw error;
     } finally {
       setLoading(false);
@@ -28,22 +52,21 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     setLoading(true);
     try {
-      // Mock login - simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const mockUser = {
-        id: 1,
-        name: 'John Doe',
-        email: credentials.email,
-        avatar: 'https://i.pravatar.cc/150?img=1',
-        hasCompletedOnboarding: true // Existing users have completed onboarding
-      };
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      setIsNewUser(false);
-      toast.success('Login successful!');
-      return mockUser;
+      const response = await authApi.login(credentials);
+      if (response.data.success) {
+        const { token, user } = response.data;
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('authUser', JSON.stringify(user));
+        setUser(user);
+        setIsAuthenticated(true);
+        setIsNewUser(false);
+        toast.success('Login successful!');
+        return user;
+      }
+      return null;
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      console.error('Login error:', error);
+      toast.error(error.response?.data?.message || 'Login failed. Please check your credentials.');
       throw error;
     } finally {
       setLoading(false);
@@ -53,53 +76,68 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await authApi.logout();
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('authUser');
       setUser(null);
       setIsAuthenticated(false);
       toast.success('Logged out successfully!');
     } catch (error) {
-      toast.error('Logout failed.');
+      console.error('Logout error:', error);
+      toast.error(error.response?.data?.message || 'Logout failed.');
     } finally {
       setLoading(false);
     }
   };
 
-  const verifyOTP = async (email, otp) => {
+  const resendEmailVerification = async (email) => {
     setLoading(true);
     try {
-      // Mock OTP verification
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      if (otp === '123456') {
-        // Create user after successful OTP verification
-        const verifiedUser = {
-          id: Math.random().toString(36).substring(2, 11),
-          name: 'New User',
-          email: email,
-          avatar: 'https://i.pravatar.cc/150?img=1',
-          hasCompletedOnboarding: false
-        };
-        setUser(verifiedUser);
-        setIsAuthenticated(true);
-        toast.success('Email verified successfully!');
-        return { success: true, isNewUser };
-      } else {
-        throw new Error('Invalid OTP');
+      const response = await authApi.resendEmailVerification(email);
+      if (response.data.success) {
+        toast.success(response.data.message || 'Verification email sent if unverified account exists.');
+        return { success: true };
       }
+      return { success: false };
     } catch (error) {
-      toast.error('Invalid OTP. Please try again.');
+      console.error('Resend email verification error:', error);
+      toast.error(error.response?.data?.message || 'Failed to send verification email.');
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const resendOTP = async (email) => {
+  const forgotPassword = async (email) => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      toast.success('New OTP sent to your email.');
+      const response = await authApi.forgotPassword(email);
+      if (response.data.success) {
+        toast.success(response.data.message || 'Password reset link sent if account exists.');
+        return { success: true };
+      }
+      return { success: false };
     } catch (error) {
-      toast.error('Failed to send OTP.');
+      console.error('Forgot password error:', error);
+      toast.error(error.response?.data?.message || 'Failed to send password reset link.');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (data) => {
+    setLoading(true);
+    try {
+      const response = await authApi.resetPassword(data);
+      if (response.data.success) {
+        toast.success(response.data.message || 'Password updated. You can login.');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      console.error('Reset password error:', error);
+      toast.error(error.response?.data?.message || 'Failed to reset password.');
       throw error;
     } finally {
       setLoading(false);
@@ -112,6 +150,7 @@ export const AuthProvider = ({ children }) => {
         ...user,
         hasCompletedOnboarding: true
       });
+      localStorage.setItem('authUser', JSON.stringify({ ...user, hasCompletedOnboarding: true }));
     }
   };
 
@@ -123,8 +162,9 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
-    verifyOTP,
-    resendOTP,
+    resendEmailVerification,
+    forgotPassword,
+    resetPassword,
     completeUserOnboarding
   };
 

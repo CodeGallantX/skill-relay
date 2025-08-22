@@ -38,10 +38,13 @@ const SignUpForm = ({ onSuccess }) => {
 
   const handleSubmit = async (data) => {
     try {
-      await register(data);
-      onSuccess?.(data.email);
+      const result = await register({ ...data, role: 'learner' }); // Add role as per API
+      if (result.success) {
+        onSuccess?.(data.email);
+      }
     } catch (error) {
-      console.error('Registration error:', error);
+      // Error handling is primarily done in AuthContext via toast.error
+      console.error('Registration error in component:', error);
     }
   };
 
