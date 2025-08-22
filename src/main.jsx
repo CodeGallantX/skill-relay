@@ -1,19 +1,29 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext';
-import { OnboardingProvider } from './context/OnboardingContext';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { OnboardingProvider } from './context/OnboardingContext.jsx';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <ThemeProvider>
-      <AuthProvider>
-        <OnboardingProvider>
-          <App />
-        </OnboardingProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </StrictMode>
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <AuthProvider>
+      <OnboardingProvider>
+        <App />
+      </OnboardingProvider>
+    </AuthProvider>
+  </React.StrictMode>,
 );
