@@ -154,14 +154,14 @@ export default function LandingPage() {
               <span>🚀</span> Now in Beta — Join Early Access
             </span>
 
-            <h1 className="mt-5 max-w-full break-words text-[38px] leading-tight font-extrabold sm:text-[42px] md:text-6xl lg:text-7xl">
+            <h1 className="mt-5 max-w-full break-words text-wrap text-[32px] leading-tight font-extrabold sm:text-[42px] md:text-6xl lg:text-7xl">
               <span className="block">Learn better.</span>
               <span className="block bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-300 bg-clip-text text-transparent">
                 Teach confidently. Earn fairly.
               </span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-[15px] md:text-base text-zinc-300">
+            <p className="mt-5 text-[15px] md:text-base text-zinc-300">
               Short, high-impact lessons from real practitioners. Create courses in minutes and grow your audience.
             </p>
 
@@ -392,7 +392,7 @@ function MiniDemoCarousel() {
   }, []); // Empty dependency array means this runs once on mount and unmount
 
   return (
-    <div className="mt-7 md:hidden">
+    <div className="mt-7 md:hidden px-6"> {/* Added px-6 here */}
       <div className="mb-2 text-sm text-zinc-400">Quick look</div>
       {/* full-bleed on mobile to avoid visual clipping */}
       <div ref={scrollRef} className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
