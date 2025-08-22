@@ -302,42 +302,75 @@ function TabBtn({ active, onClick, children }) {
 
 function MiniDemoCarousel() {
   const scrollRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const stopScrolling = useRef(() => {}); // Use ref for stopScrolling to avoid re-creation
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
     let scrollInterval;
-    const startScrolling = () => {
+    const startAutoScrolling = () => {
       scrollInterval = setInterval(() => {
         if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth) {
-          // If at the end, reset to beginning
           scrollContainer.scrollLeft = 0;
         } else {
-          // Scroll by a fixed amount (e.g., width of one card + gap)
           const cardWidth = scrollContainer.querySelector('.snap-start')?.offsetWidth || 0;
-          const gap = 16; // Tailwind's gap-4 is 16px
+          const gap = 16;
           scrollContainer.scrollLeft += (cardWidth + gap);
         }
-      }, 3000); // Scroll every 3 seconds
+      }, 3000);
     };
 
-    const stopScrolling = () => {
+    stopScrolling.current = () => { // Assign to ref's current
       clearInterval(scrollInterval);
     };
 
-    // Start scrolling when component mounts
-    startScrolling();
+    // Mouse drag functionality
+    const handleMouseDown = (e) => {
+      isDragging.current = true;
+      stopScrolling.current(); // Stop auto-scrolling when dragging starts
+      startX.current = e.pageX - scrollContainer.offsetLeft;
+      scrollLeft.current = scrollContainer.scrollLeft;
+      scrollContainer.style.cursor = 'grabbing';
+      scrollContainer.style.userSelect = 'none';
+    };
 
-    // Pause on hover
-    scrollContainer.addEventListener('mouseenter', stopScrolling);
-    scrollContainer.addEventListener('mouseleave', startScrolling);
+    const handleMouseMove = (e) => {
+      if (!isDragging.current) return;
+      e.preventDefault(); // Prevent text selection and other default behaviors
+      const x = e.pageX - scrollContainer.offsetLeft;
+      const walk = (x - startX.current) * 1.5; // Multiplier for faster drag
+      scrollContainer.scrollLeft = scrollLeft.current - walk;
+    };
+
+    const handleMouseUp = () => {
+      isDragging.current = false;
+      startAutoScrolling(); // Resume auto-scrolling when dragging stops
+      scrollContainer.style.cursor = 'grab';
+      scrollContainer.style.userSelect = 'auto';
+    };
+
+    // Initial setup
+    startAutoScrolling();
+    scrollContainer.style.cursor = 'grab';
+
+    // Event listeners for mouse drag
+    scrollContainer.addEventListener('mousedown', handleMouseDown);
+    scrollContainer.addEventListener('mousemove', handleMouseMove);
+    scrollContainer.addEventListener('mouseup', handleMouseUp);
+    scrollContainer.addEventListener('mouseleave', handleMouseUp); // Treat mouse leave as mouse up
 
     // Clean up on unmount
     return () => {
-      stopScrolling();
-      scrollContainer.removeEventListener('mouseenter', stopScrolling);
-      scrollContainer.removeEventListener('mouseleave', startScrolling);
+      stopScrolling.current();
+      scrollContainer.removeEventListener('mousedown', handleMouseDown);
+      scrollContainer.removeEventListener('mousemove', handleMouseMove);
+      scrollContainer.removeEventListener('mouseup', handleMouseUp);
+      scrollContainer.removeEventListener('mouseleave', handleMouseUp);
     };
   }, []); // Empty dependency array means this runs once on mount and unmount
 
