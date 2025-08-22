@@ -380,7 +380,7 @@ function MiniDemoCarousel() {
       {/* full-bleed on mobile to avoid visual clipping */}
       <div ref={scrollRef} className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
         <div className="flex gap-4 pr-2">
-          {demoCourses.slice(0, 4).map((c) => (
+          {demoCourses.map((c) => ( // Removed .slice(0, 4)
             <div key={c.id} className="snap-start min-w-[88vw] sm:min-w-[360px] rounded-2xl border border-white/10 bg-[#0D1426] p-5">
               <div className="grid h-40 place-items-center rounded-xl bg-blue-500/10 text-5xl ring-1 ring-blue-400/10">
                 {c.emoji}
