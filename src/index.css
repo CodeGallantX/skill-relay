@@ -77,40 +77,40 @@
 }
 
 .dark {
-  /* Dark Theme Variables - High Contrast */
-  --background: #0a0a0a;
+  /* Dark Theme Variables - High Contrast (Blue Shades) */
+  --background: #0D1117; /* Very dark blue */
   --foreground: #fafafa;
-  --card: #1a1a1a;
+  --card: #161B22; /* Darker blue for cards */
   --card-foreground: #fafafa;
-  --popover: #1a1a1a;
+  --popover: #161B22; /* Darker blue for popovers */
   --popover-foreground: #fafafa;
-  --primary: var(--blue-500); /* Changed from purple */
+  --primary: var(--blue-500);
   --primary-foreground: #ffffff;
   --secondary: var(--yellow-400);
-  --secondary-foreground: var(--blue-900); /* Changed from purple */
-  --muted: #262626;
+  --secondary-foreground: var(--blue-900);
+  --muted: #21262D; /* Dark blue for muted backgrounds */
   --muted-foreground: #a3a3a3;
-  --accent: var(--blue-800); /* Changed from purple */
+  --accent: var(--blue-800);
   --accent-foreground: var(--yellow-100);
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #404040;
-  --input: #262626;
-  --ring: var(--blue-500); /* Changed from purple */
+  --border: #30363D; /* Dark blue for borders */
+  --input: #1F242C; /* Dark blue for input fields */
+  --ring: var(--blue-500);
 
   /* Chart colors */
-  --chart-1: var(--blue-400); /* Changed from purple */
+  --chart-1: var(--blue-400);
   --chart-2: var(--yellow-400);
-  --chart-3: var(--blue-600); /* Changed from purple */
+  --chart-3: var(--blue-600);
   --chart-4: var(--yellow-200);
-  --chart-5: var(--blue-200); /* Changed from purple */
+  --chart-5: var(--blue-200);
 
   /* Sidebar colors */
-  --sidebar: #1a1a1a;
+  --sidebar: #161B22; /* Darker blue for sidebar */
   --sidebar-foreground: var(--yellow-50);
   --sidebar-primary: var(--yellow-400);
-  --sidebar-primary-foreground: var(--blue-900); /* Changed from purple */
-  --sidebar-accent: var(--blue-600); /* Changed from purple */
+  --sidebar-primary-foreground: var(--blue-900);
+  --sidebar-accent: var(--blue-600);
   --sidebar-accent-foreground: var(--yellow-100);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--yellow-400);
