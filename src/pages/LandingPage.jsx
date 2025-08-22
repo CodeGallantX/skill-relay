@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button";
@@ -57,7 +57,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0B1120]/70 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
           <button onClick={() => go("/")} className="flex items-center gap-3">
-            <div className="h-10 w-10 grid place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-bold shadow-[0_0_24px_rgba(59,130,246,.55)]">
+            <div className="h-10 w-10 grid place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-300 text-white text-sm font-bold shadow-[0_0_24px_rgba(59,130,246,.55)]">
               SR
             </div>
             <span className="text-2xl font-bold tracking-tight">SkillRelay</span>
@@ -301,11 +301,51 @@ function TabBtn({ active, onClick, children }) {
 }
 
 function MiniDemoCarousel() {
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let scrollInterval;
+    const startScrolling = () => {
+      scrollInterval = setInterval(() => {
+        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth) {
+          // If at the end, reset to beginning
+          scrollContainer.scrollLeft = 0;
+        } else {
+          // Scroll by a fixed amount (e.g., width of one card + gap)
+          const cardWidth = scrollContainer.querySelector('.snap-start')?.offsetWidth || 0;
+          const gap = 16; // Tailwind's gap-4 is 16px
+          scrollContainer.scrollLeft += (cardWidth + gap);
+        }
+      }, 3000); // Scroll every 3 seconds
+    };
+
+    const stopScrolling = () => {
+      clearInterval(scrollInterval);
+    };
+
+    // Start scrolling when component mounts
+    startScrolling();
+
+    // Pause on hover
+    scrollContainer.addEventListener('mouseenter', stopScrolling);
+    scrollContainer.addEventListener('mouseleave', startScrolling);
+
+    // Clean up on unmount
+    return () => {
+      stopScrolling();
+      scrollContainer.removeEventListener('mouseenter', stopScrolling);
+      scrollContainer.removeEventListener('mouseleave', startScrolling);
+    };
+  }, []); // Empty dependency array means this runs once on mount and unmount
+
   return (
     <div className="mt-7 md:hidden">
       <div className="mb-2 text-sm text-zinc-400">Quick look</div>
       {/* full-bleed on mobile to avoid visual clipping */}
-      <div className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
+      <div ref={scrollRef} className="-mx-4 px-4 snap-x snap-mandatory overflow-x-auto touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none]" style={{ WebkitOverflowScrolling: "touch" }}>
         <div className="flex gap-4 pr-2">
           {demoCourses.slice(0, 4).map((c) => (
             <div key={c.id} className="snap-start min-w-[88vw] sm:min-w-[360px] rounded-2xl border border-white/10 bg-[#0D1426] p-5">
@@ -435,7 +475,7 @@ function FooterPro() {
       <div className="mx-auto max-w-7xl grid gap-10 px-4 sm:px-6 lg:px-8 py-16 md:py-20 md:grid-cols-4">
         <div>
           <div className="mb-4 flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm font-bold">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-300 text-white text-sm font-bold">
               SR
             </div>
             <span className="text-lg font-semibold">SkillRelay</span>
