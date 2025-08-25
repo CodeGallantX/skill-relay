@@ -50,7 +50,7 @@ const EmailVerificationConfirmationPage = () => {
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
           <Button asChild className="w-full">
-            <Link to="/auth/signin">Go to Sign In</Link>
+            <Link to="/onboarding">Go to Onboarding</Link>
           </Button>
         </CardContent>
       </Card>

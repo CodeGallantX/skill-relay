@@ -154,6 +154,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyOTP = async (email, otp) => {
+    setLoading(true);
+    try {
+      const response = await authApi.verifyOTP(email, otp);
+      if (response.data.success) {
+        const { token, user } = response.data;
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('authUser', JSON.stringify(user));
+        setUser(user);
+        setIsAuthenticated(true);
+        toast.success('OTP verified successfully!');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      toast.error(error.response?.data?.message || 'OTP verification failed.');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const socialAuth = (provider) => {
+    window.location.href = authApi.socialAuthRedirect(provider);
+  };
+
   const authContextValue = {
     user,
     isAuthenticated,
@@ -165,7 +192,9 @@ export const AuthProvider = ({ children }) => {
     resendEmailVerification,
     forgotPassword,
     resetPassword,
-    completeUserOnboarding
+    completeUserOnboarding,
+    verifyOTP,
+    socialAuth,
   };
 
   return (
