@@ -1,15 +1,13 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { FormField } from './forms/FormField';
 
 const signUpSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -22,8 +20,6 @@ const signUpSchema = z.object({
 });
 
 const SignUpForm = ({ onSuccess }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register, loading } = useAuth();
 
   const form = useForm({
@@ -37,14 +33,9 @@ const SignUpForm = ({ onSuccess }) => {
   });
 
   const handleSubmit = async (data) => {
-    try {
-      const result = await register({ ...data, role: 'learner' }); // Add role as per API
-      if (result.success) {
-        onSuccess?.(data.email);
-      }
-    } catch (error) {
-      // Error handling is primarily done in AuthContext via toast.error
-      console.error('Registration error in component:', error);
+    const result = await register({ ...data, role: 'learner' });
+    if (result.success) {
+      onSuccess?.(data.email);
     }
   };
 
@@ -61,92 +52,42 @@ const SignUpForm = ({ onSuccess }) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="name"
-                type="text"
-                placeholder="Your full name"
-                className="pl-10 h-12 text-base"
-                {...form.register('name')}
-              />
-            </div>
-            {form.formState.errors.name && (
-              <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@example.com"
-                className="pl-10 h-12 text-base"
-                {...form.register('email')}
-              />
-            </div>
-            {form.formState.errors.email && (
-              <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Create a password"
-                className="pl-10 pr-10 h-12 text-base"
-                {...form.register('password')}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            {form.formState.errors.password && (
-              <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm your password"
-                className="pl-10 pr-10 h-12 text-base"
-                {...form.register('confirmPassword')}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            {form.formState.errors.confirmPassword && (
-              <p className="text-sm text-destructive">{form.formState.errors.confirmPassword.message}</p>
-            )}
-          </div>
-
+          <FormField
+            id="name"
+            label="Full Name"
+            type="text"
+            placeholder="Your full name"
+            register={form.register('name')}
+            error={form.formState.errors.name}
+            icon={User}
+          />
+          <FormField
+            id="email"
+            label="Email"
+            type="email"
+            placeholder="your@example.com"
+            register={form.register('email')}
+            error={form.formState.errors.email}
+            icon={Mail}
+          />
+          <FormField
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="Create a password"
+            register={form.register('password')}
+            error={form.formState.errors.password}
+            icon={Lock}
+          />
+          <FormField
+            id="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            placeholder="Confirm your password"
+            register={form.register('confirmPassword')}
+            error={form.formState.errors.confirmPassword}
+            icon={Lock}
+          />
           <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
             {loading ? <LoadingSpinner size="sm" /> : 'Create Account'}
           </Button>

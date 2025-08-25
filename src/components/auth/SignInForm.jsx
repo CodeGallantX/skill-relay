@@ -1,15 +1,13 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { FormField } from './forms/FormField';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -17,7 +15,6 @@ const signInSchema = z.object({
 });
 
 const SignInForm = ({ onSuccess }) => {
-  const [showPassword, setShowPassword] = useState(false);
   const { login, loading } = useAuth();
 
   const form = useForm({
@@ -29,14 +26,9 @@ const SignInForm = ({ onSuccess }) => {
   });
 
   const handleSubmit = async (data) => {
-    try {
-      const user = await login(data);
-      if (user) { // Check if user object is returned (login successful)
-        onSuccess?.();
-      }
-    } catch (error) {
-      // Error handling is primarily done in AuthContext via toast.error
-      console.error('Login error in component:', error);
+    const user = await login(data);
+    if (user) {
+      onSuccess?.();
     }
   };
 
@@ -53,49 +45,24 @@ const SignInForm = ({ onSuccess }) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@example.com"
-                className="pl-10 h-12 text-base"
-                {...form.register('email')}
-              />
-            </div>
-            {form.formState.errors.email && (
-              <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                className="pl-10 pr-10 h-12 text-base"
-                {...form.register('password')}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            {form.formState.errors.password && (
-              <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>
-            )}
-          </div>
-
+          <FormField
+            id="email"
+            label="Email"
+            type="email"
+            placeholder="your@example.com"
+            register={form.register('email')}
+            error={form.formState.errors.email}
+            icon={Mail}
+          />
+          <FormField
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+            register={form.register('password')}
+            error={form.formState.errors.password}
+            icon={Lock}
+          />
           <Button type="submit" className="w-full h-12 text-base shadow-glow" disabled={loading}>
             {loading ? <LoadingSpinner size="sm" /> : 'Sign In'}
           </Button>

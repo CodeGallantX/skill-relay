@@ -10,7 +10,7 @@ import EmailVerificationPage from './pages/auth/EmailVerificationPage';
 import EmailVerificationConfirmationPage from './pages/auth/EmailVerificationConfirmationPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'; // New Import
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';   // New Import
-import OnboardingPage from './pages/OnboardingPage';
+import OnboardingFlow from './components/onboarding/OnboardingFlow';
 
 // Dashboard Pages
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -73,7 +73,7 @@ function App() {
             path="/onboarding" 
             element={
               isAuthenticated ? (
-                (completed || (user && user.hasCompletedOnboarding)) ? <Navigate to="/dashboard" replace /> : <OnboardingPage />
+                (completed || (user && user.hasCompletedOnboarding)) ? <Navigate to="/dashboard" replace /> : <OnboardingFlow />
               ) : (
                 <Navigate to="/signin" replace />
               )
